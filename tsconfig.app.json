@@ -16,7 +16,8 @@
       "@hooks/*": ["src/hooks/*"],
       "@context/*": ["src/context/*"],
       "@services/*": ["src/services/*"],
-      "@types/*": ["src/types/*"]
+      "@types/*": ["src/types/*"],
+      "@assets/*": ["src/assets/*"]
     },
 
     /* Bundler mode */

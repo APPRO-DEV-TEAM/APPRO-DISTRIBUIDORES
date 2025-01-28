@@ -3,14 +3,15 @@ import { useState } from "react";
 import { Input } from "./components/ui/input";
 import { SelectInput } from "./components/ui/select";
 import { InputMask } from "./components/ui/input-mask";
+import { Card } from "./components/ui/card";
+import { Tabs } from "./components/ui/tabs";
 
 import { Search } from "lucide-react";
+
 import { Local } from "./assets/icons/local";
 import { List } from "./assets/icons/list";
 
 import bannerWeb from "./assets/banner-web.png";
-import { Card } from "./components/ui/card";
-import { Tabs } from "./components/ui/tabs";
 
 function App() {
   const [value, setValue] = useState("");
@@ -29,7 +30,7 @@ function App() {
 
       <div className="z-10 flex w-[80%] items-center justify-center">
         <div className="mt-[-100px] flex w-full flex-col items-center justify-center gap-6 rounded-2xl bg-zinc-800 px-16 py-8">
-          <span className="text-4xl font-light text-white">
+          <span className="text-[2vw] font-light text-white">
             Encontre o{" "}
             <span className="font-dmSans bg-gradient-to-r from-[#ffe1b7] via-[#fff0d7] to-[#a79172] bg-clip-text font-medium text-transparent">
               Distribuidor APPRO

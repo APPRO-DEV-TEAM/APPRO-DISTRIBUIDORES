@@ -3,9 +3,12 @@ import { createRoot } from "react-dom/client";
 
 import "./styles/global.css";
 import App from "./App.tsx";
+import { Theme } from "@radix-ui/themes";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <Theme>
+      <App />
+    </Theme>
   </StrictMode>
 );

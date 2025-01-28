@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const Whatsapp = () => <FontAwesomeIcon icon={faWhatsapp} />;
 
 interface CardProps {
+  plan?: string;
   title: string;
   name: string;
   address: string;
@@ -14,6 +15,7 @@ interface CardProps {
 }
 
 export function Card({
+  plan,
   title,
   name,
   address,
@@ -26,6 +28,7 @@ export function Card({
       <div className="flex h-[27rem] w-[22rem] flex-col items-center justify-center space-y-4 rounded-2xl bg-[#DEDEDE] px-8">
         <div className="absolute translate-x-[-70px] translate-y-[-200px] items-center justify-center rounded-xl bg-[#262626] px-2 py-2">
           <span className="font-bold text-white">
+            {plan}
             DISTRIBUIDOR <span className="text-[#FFCF8B]">PRO</span>
           </span>
         </div>

@@ -23,7 +23,9 @@ export const SelectInput = ({
         onChange={(e) => onChange(e.target.value)}
       >
         {options.map((option: OptionsProps) => (
-          <option value={option.value}>{option.label}</option>
+          <option key={option.id} value={option.value}>
+            {option.label}
+          </option>
         ))}
       </select>
     </span>

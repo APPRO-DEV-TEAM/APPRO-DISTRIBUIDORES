@@ -1,12 +1,16 @@
-import { Search } from "lucide-react";
-import bannerWeb from "./assets/banner-web.png";
-import { Input } from "./components/ui/input";
 import { useState } from "react";
+
+import { Input } from "./components/ui/input";
 import { SelectInput } from "./components/ui/select";
 import { InputMask } from "./components/ui/input-mask";
-import { Tabs } from "@base-ui-components/react";
+
+import { Search } from "lucide-react";
 import { Local } from "./assets/icons/local";
 import { List } from "./assets/icons/list";
+
+import bannerWeb from "./assets/banner-web.png";
+import { Card } from "./components/ui/card";
+import { Tabs } from "./components/ui/tabs";
 
 function App() {
   const [value, setValue] = useState("");
@@ -36,7 +40,7 @@ function App() {
         </div>
       </div>
 
-      <div className="flex h-full w-[80%] flex-col gap-6">
+      <div className="flex h-full w-[80vw] flex-col gap-6">
         <div className="flex flex-row gap-4">
           <SelectInput
             placeholder="Região"
@@ -51,34 +55,71 @@ function App() {
           />
           <InputMask onChange={setCep} />
         </div>
-        <Tabs.Root
-          className="w-[375px] rounded-md py-4 text-lg"
-          defaultValue="1"
-        >
-          <Tabs.List className="relative z-0 flex gap-10 border-b border-b-[#363636] px-1 pb-2">
-            <Tabs.Tab
-              value="1"
-              className="flex flex-row items-center justify-center gap-2"
-            >
-              <List />
-              Exibição de lista
-            </Tabs.Tab>
-            <Tabs.Tab
-              value="2"
-              className="flex flex-row items-center justify-center gap-2"
-            >
-              <Local />
-              Visão do mapa
-            </Tabs.Tab>
-            <Tabs.Indicator className="absolute top-1/2 left-[-22px] z-[-1] h-6 w-[197px] -translate-y-1/2 translate-x-[var(--active-tab-left)] border-b-[6px] border-b-[#846944] px-10 pb-10 transition-all duration-200 ease-in-out" />
-          </Tabs.List>
 
-          <Tabs.Panel value="1">
-            <div>sfajdssakj</div>
-          </Tabs.Panel>
-          <Tabs.Panel value="2">
-            <div>skdaksd</div>
-          </Tabs.Panel>
+        <Tabs.Root>
+          <Tabs.Container defaultValue="list">
+            <Tabs.Options>
+              <Tabs.Option
+                icon={<List />}
+                title="Exibição de lista"
+                value="list"
+              />
+              <Tabs.Option icon={<Local />} title="Visão do mapa" value="map" />
+            </Tabs.Options>
+
+            <Tabs.Content value="list">
+              <section className="flex flex-wrap justify-center gap-4 self-stretch">
+                <Card
+                  title="São Paulo - Zona Sul"
+                  name="Ricardo Carvalho"
+                  address="14020-750 - Brasil"
+                  phone="(21) 99264-5278"
+                  whatsapp="(21) 99264-5278"
+                  email="contato@distribuidor.com.br"
+                />
+                <Card
+                  title="São Paulo - Zona Sul"
+                  name="Ricardo Carvalho"
+                  address="14020-750 - Brasil"
+                  phone="(21) 99264-5278"
+                  whatsapp="(21) 99264-5278"
+                  email="contato@distribuidor.com.br"
+                />
+                <Card
+                  title="São Paulo - Zona Sul"
+                  name="Ricardo Carvalho"
+                  address="14020-750 - Brasil"
+                  phone="(21) 99264-5278"
+                  whatsapp="(21) 99264-5278"
+                  email="contato@distribuidor.com.br"
+                />
+                <Card
+                  title="São Paulo - Zona Sul"
+                  name="Ricardo Carvalho"
+                  address="14020-750 - Brasil"
+                  phone="(21) 99264-5278"
+                  whatsapp="(21) 99264-5278"
+                  email="contato@distribuidor.com.br"
+                />
+                <Card
+                  title="São Paulo - Zona Sul"
+                  name="Ricardo Carvalho"
+                  address="14020-750 - Brasil"
+                  phone="(21) 99264-5278"
+                  whatsapp="(21) 99264-5278"
+                  email="contato@distribuidor.com.br"
+                />
+                <Card
+                  title="São Paulo - Zona Sul"
+                  name="Ricardo Carvalho"
+                  address="14020-750 - Brasil"
+                  phone="(21) 99264-5278"
+                  whatsapp="(21) 99264-5278"
+                  email="contato@distribuidor.com.br"
+                />
+              </section>
+            </Tabs.Content>
+          </Tabs.Container>
         </Tabs.Root>
       </div>
     </div>

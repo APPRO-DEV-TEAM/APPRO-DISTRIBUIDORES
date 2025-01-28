@@ -18,7 +18,7 @@ export const SelectInput = ({
   return (
     <span className="flex h-14 w-72 items-center justify-center rounded-lg bg-[#d4d4d4] px-4 font-normal shadow-sm">
       <select
-        className="w-[80%] px-10 py-4 text-lg"
+        className="w-[100%] py-4 pr-10 text-lg"
         name={placeholder}
         onChange={(e) => onChange(e.target.value)}
       >

@@ -1,51 +1,33 @@
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
-import { useState, useEffect } from "react";
+import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { Loading } from "./loading";
 
+const containerStyle = {
+  width: "80vw",
+  height: "500px",
+};
+
+const center = {
+  lat: -3.745,
+  lng: -38.523,
+};
+
 export function Maps() {
-  // Estado para armazenar a localização atual
-  const [currentLocation, setCurrentLocation] = useState<
-    [number, number] | null
-  >(null);
-
-  useEffect(() => {
-    // Obter a localização atual do usuário
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          // Atualiza a localização com as coordenadas obtidas
-          setCurrentLocation([
-            position.coords.latitude,
-            position.coords.longitude,
-          ]);
-        },
-        (error) => {
-          console.error("Erro ao obter a localização", error);
-          // Caso não consiga obter a localização, define um valor padrão
-          setCurrentLocation([51.505, -0.09]); // Localização padrão
-        }
-      );
-    } else {
-      console.error("Geolocalização não suportada");
-      // Caso o navegador não suporte geolocalização, usa uma localização padrão
-      setCurrentLocation([51.505, -0.09]); // Localização padrão
-    }
-  }, []);
-
-  // Se a localização ainda não foi carregada, exibe uma mensagem de carregamento
-  if (currentLocation === null) {
-    return <Loading />;
-  }
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: "AIzaSyATFFlBVvbstEAytcAChHNX73TIrsFmGzU",
+  });
 
   return (
-    <div id="map" className="h-[500px]">
-      <MapContainer center={currentLocation} zoom={13} scrollWheelZoom={false}>
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright" />'
-          url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
-        />
-        <Marker position={currentLocation}></Marker>
-      </MapContainer>
+    <div id="map">
+      {isLoaded ? (
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={center}
+          zoom={10}
+        ></GoogleMap>
+      ) : (
+        <Loading />
+      )}
     </div>
   );
 }

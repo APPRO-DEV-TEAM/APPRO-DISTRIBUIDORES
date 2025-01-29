@@ -13,25 +13,35 @@ import { Local } from "./assets/icons/local";
 import { List } from "./assets/icons/list";
 
 import bannerWeb from "./assets/banner-web.png";
+import bannerMobile from "./assets/banner-mobile.png";
 
 function App() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth < 440) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  });
   const [value, setValue] = useState("");
   const [cep, setCep] = useState("");
 
   console.log(value, cep);
   return (
     <div className="flex h-screen flex-col items-center gap-4">
-      <div className="relative h-[635px] w-full bg-gray-300">
+      <div className="relative h-[635px] w-full justify-center bg-gray-300">
         <img
-          src={bannerWeb}
+          src={isMobile ? bannerMobile : bannerWeb}
           alt="banner"
           className="z-0 min-h-full object-cover"
         />
       </div>
 
-      <div className="z-10 flex w-[80%] items-center justify-center">
+      <div className="z-10 flex w-[80vw] items-center justify-center sm:w-[90vw]">
         <div className="mt-[-100px] flex w-full flex-col items-center justify-center gap-6 rounded-2xl bg-zinc-800 px-16 py-8">
-          <span className="text-[2vw] font-light text-white">
+          <span className="font-light text-white sm:text-center sm:text-xs md:text-sm lg:text-2xl">
             Encontre o{" "}
             <span className="font-dmSans bg-gradient-to-r from-[#ffe1b7] via-[#fff0d7] to-[#a79172] bg-clip-text font-medium text-transparent">
               Distribuidor APPRO

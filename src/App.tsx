@@ -5,6 +5,7 @@ import { SelectInput } from "./components/ui/select";
 import { InputMask } from "./components/ui/input-mask";
 import { Card } from "./components/ui/card";
 import { Tabs } from "./components/ui/tabs";
+import { Maps } from "./components/ui/maps";
 
 import { Search } from "lucide-react";
 
@@ -119,6 +120,9 @@ function App() {
                   email="contato@distribuidor.com.br"
                 />
               </section>
+            </Tabs.Content>
+            <Tabs.Content value="map">
+              <Maps />
             </Tabs.Content>
           </Tabs.Container>
         </Tabs.Root>

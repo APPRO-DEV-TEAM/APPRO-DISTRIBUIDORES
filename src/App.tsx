@@ -122,7 +122,9 @@ function App() {
               </section>
             </Tabs.Content>
             <Tabs.Content value="map">
-              <Maps />
+              <section className="flex justify-center">
+                <Maps />
+              </section>
             </Tabs.Content>
           </Tabs.Container>
         </Tabs.Root>

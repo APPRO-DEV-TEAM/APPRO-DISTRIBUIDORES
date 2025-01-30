@@ -2,7 +2,7 @@ import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { Loading } from "./loading";
 
 const containerStyle = {
-  width: "80vw",
+  width: "100%",
   height: "500px",
 };
 
@@ -18,7 +18,7 @@ export function Maps() {
   });
 
   return (
-    <div id="map">
+    <div id="map" className="w-full sm:w-[80vw]">
       {isLoaded ? (
         <GoogleMap
           mapContainerStyle={containerStyle}

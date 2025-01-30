@@ -44,6 +44,9 @@ importers:
       '@types/leaflet':
         specifier: ^1.9.16
         version: 1.9.16
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4

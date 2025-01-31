@@ -1,10 +1,5 @@
 import { SearchProvider } from "./search-provider";
-import { PredictionsResultsProps } from "./search.types";
-
-interface SearchRootProps {
-  children: React.ReactNode;
-  onResultChange: (data: PredictionsResultsProps) => void;
-}
+import type { SearchRootProps } from "./search.types";
 
 export function SearchRoot({ children, onResultChange }: SearchRootProps) {
   return (

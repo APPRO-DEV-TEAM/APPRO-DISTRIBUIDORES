@@ -6,7 +6,10 @@ interface SearchListProps {
 
 export function SearchList({ children }: SearchListProps) {
   const { results } = useSearch();
+
   return results.length > 0 ? (
-    <div className="flex flex-col gap-2 bg-amber-500">{children}</div>
+    <div className="mt-2 w-full rounded-lg border border-gray-200 bg-white shadow-lg">
+      {children}
+    </div>
   ) : null;
 }

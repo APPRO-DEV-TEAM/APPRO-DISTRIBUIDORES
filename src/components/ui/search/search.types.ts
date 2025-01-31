@@ -1,14 +1,21 @@
-// search.types.ts
+export interface PlaceProps {
+  displayName: {
+    text: string;
+    languageCode: string;
+  };
+  formattedAddress: string;
+}
+
 export interface PredictionsResultsProps {
   places: PlaceProps[];
 }
 
-export interface PlaceProps {
-  displayName: string;
-  formattedAddress: string;
+export interface SearchProviderProps {
+  children: React.ReactNode;
+  onResultChange: (data: PredictionsResultsProps) => void;
 }
 
-export interface SearchProviderProps {
+export interface SearchRootProps {
   children: React.ReactNode;
   onResultChange: (data: PredictionsResultsProps) => void;
 }
@@ -19,9 +26,4 @@ export interface SearchItemProps {
 
 export interface SearchListProps {
   children: React.ReactNode;
-}
-
-export interface SearchRootProps {
-  children: React.ReactNode;
-  onResultChange: (data: PredictionsResultsProps) => void;
 }

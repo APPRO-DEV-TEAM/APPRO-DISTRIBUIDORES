@@ -11,25 +11,37 @@ export const SearchProvider = ({
 
   const handleSearch = useCallback(
     async (search: string) => {
-      setInputValue(search);
+      try {
+        setInputValue(search);
 
-      const response = await fetch(
-        "https://places.googleapis.com/v1/places:searchText",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Goog-Api-Key": "AIzaSyATFFlBVvbstEAytcAChHNX73TIrsFmGzU",
-            "X-Goog-FieldMask": "places.displayName,places.formattedAddress",
-          },
-          body: JSON.stringify({ textQuery: search }),
+        if (search.length < 3) {
+          setResults([]);
+          return;
         }
-      );
 
-      const data = await response.json();
-      const places = data.places || [];
-      setResults(places);
-      onResultChange(places);
+        const response = await fetch(
+          "https://places.googleapis.com/v1/places:searchText",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Goog-Api-Key": "AIzaSyATFFlBVvbstEAytcAChHNX73TIrsFmGzU",
+              "X-Goog-FieldMask": "places.displayName,places.formattedAddress",
+            },
+            body: JSON.stringify({ textQuery: search }),
+          }
+        );
+
+        if (!response.ok) throw new Error("Erro na requisição");
+
+        const data = await response.json();
+        const places = data.places || [];
+        setResults(places);
+        onResultChange({ places });
+      } catch (error) {
+        console.error("Search error:", error);
+        setResults([]);
+      }
     },
     [onResultChange]
   );

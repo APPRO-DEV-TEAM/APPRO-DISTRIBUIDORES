@@ -1,27 +1,46 @@
 import { useState } from "react";
 
-import { Input } from "./components/ui/input";
+// import { Input } from "./components/ui/input";
 import { SelectInput } from "./components/ui/select";
 import { InputMask } from "./components/ui/input-mask";
 import { Card } from "./components/ui/card";
 import { Tabs } from "./components/ui/tabs";
 import { Maps } from "./components/ui/maps";
 
-import { Search } from "lucide-react";
+// import { Search as SearchIcon } from "lucide-react";
 
 import { Local } from "./assets/icons/local";
 import { List } from "./assets/icons/list";
 
 import bannerWeb from "./assets/banner-web.png";
 import bannerMobile from "./assets/banner-mobile.png";
+import { Search } from "./components/ui/search";
+import { PredictionsResultsProps } from "./components/ui/search/search.types";
+import { SearchIcon } from "lucide-react";
+
+interface PlaceProps {
+  formattedAddress: string;
+  displayName: {
+    text: string;
+    languageCode: string;
+  };
+}
+
+export interface PlacesProps {
+  places: PlaceProps[];
+}
 
 function App() {
   const [value, setValue] = useState("");
   const [cep, setCep] = useState("");
 
+  const handleResults = (data: PredictionsResultsProps) => {
+    console.log("Resultados atualizados:", data.places);
+  };
+
   console.log(value, cep);
   return (
-    <div className="flex h-screen flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4">
       <div className="relative h-[400px] w-full justify-center bg-gray-300">
         <img
           src={bannerMobile}
@@ -44,11 +63,34 @@ function App() {
             </span>{" "}
             Mais Próximo de Você
           </span>
-          <Input placeholder="Procurar" icon={Search} />
+          <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
+            <div className="h-full w-full flex-1">
+              <Search.Root onResultChange={handleResults}>
+                <Search.Input icon={SearchIcon} />
+                <Search.List>
+                  <Search.Item
+                    renderItem={(place) => (
+                      <div
+                        key={place.formattedAddress}
+                        className="cursor-pointer p-3 hover:bg-gray-50"
+                      >
+                        <p className="font-medium text-gray-800">
+                          {place.displayName.text}{" "}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {place.formattedAddress}
+                        </p>
+                      </div>
+                    )}
+                  />
+                </Search.List>
+              </Search.Root>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="flex h-full w-[90vw] flex-col gap-6 sm:w-[80vw]">
+      <div className="w-[90vw overflow-y-vi flex min-h-full flex-1 flex-col gap-6 sm:w-[80vw]">
         <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
           <SelectInput
             placeholder="Região"
@@ -135,6 +177,12 @@ function App() {
           </Tabs.Container>
         </Tabs.Root>
       </div>
+
+      <footer className="flex h-20 w-full items-center justify-center bg-zinc-800">
+        <span className="text-sm font-light text-white">
+          © 2021 - Distribuidor APPRO
+        </span>
+      </footer>
     </div>
   );
 }

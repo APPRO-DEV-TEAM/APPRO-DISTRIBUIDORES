@@ -8,7 +8,7 @@ export function SearchList({ children }: SearchListProps) {
   const { results } = useSearch();
 
   return results.length > 0 ? (
-    <div className="mt-2 w-full rounded-lg border border-gray-200 bg-white shadow-lg">
+    <div className="absolute mt-2 max-h-96 w-[70vw] overflow-y-scroll rounded-lg border border-gray-200 bg-white shadow-lg">
       {children}
     </div>
   ) : null;

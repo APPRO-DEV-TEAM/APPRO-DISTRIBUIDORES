@@ -1,54 +1,58 @@
 // src/contexts/location-context.tsx
-import { createContext, useCallback, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useState,
+  useContext,
+  ReactNode,
+} from "react";
 import type { GeoProps } from "../types/geo.types";
-import { DistributorProps } from "@/types/distributors.types";
+import { DistributorProps } from "../types/distributors.types";
 
 type LocationContextData = {
   handleDistributorsLocation: (distributors: DistributorProps[]) => void;
-  geoDistributorsLocation: () => GeoProps[] | null;
+  geoDistributorsLocation: GeoProps[];
 };
 
-export const LocationContext = createContext<LocationContextData>(
+const LocationContext = createContext<LocationContextData>(
   {} as LocationContextData
 );
 
-export function LocationProvider({ children }: { children: React.ReactNode }) {
-  const [distributorsGeolocation, setDistributorsGeolocation] = useState<
-    GeoProps[] | null
-  >(null);
+export function LocationContextProvider({ children }: { children: ReactNode }) {
+  const [geoDistributorsLocation, setGeoDistributorsLocation] = useState<
+    GeoProps[]
+  >([]);
 
-  // const [selectedPlace, setSelectedPlace] = useState<PlaceProps | null>(null);
-  // const [cep, setCep] = useState("");
-  // const [region, setRegion] = useState("");
-
-  function handleDistributorsLocation(distributors: DistributorProps[]) {
-    const locations: (GeoProps | null)[] = distributors.map((distributor) => {
-      if (!distributor.latitude || !distributor.longitude) {
-        return null;
-      }
-      const { latitude, longitude, id: distributorId } = distributor;
-      return { lat: latitude, lng: longitude, distributorId };
-    });
-
-    const validLocations: GeoProps[] = locations.filter(
-      (location): location is GeoProps => location !== null
-    );
-
-    setDistributorsGeolocation(validLocations);
-  }
-
-  const geoDistributorsLocation = useCallback(() => {
-    return distributorsGeolocation;
-  }, [distributorsGeolocation]);
+  const handleDistributorsLocation = useCallback(
+    (distributors: DistributorProps[]) => {
+      const newLocations = distributors.map((distributor) => ({
+        lat: distributor.latitude,
+        lng: distributor.longitude,
+        distributorId: distributor.id.toString(), // Converta para string
+      }));
+      setGeoDistributorsLocation(newLocations);
+    },
+    []
+  );
 
   return (
     <LocationContext.Provider
       value={{
-        geoDistributorsLocation,
         handleDistributorsLocation,
+        geoDistributorsLocation,
       }}
     >
       {children}
     </LocationContext.Provider>
   );
+}
+
+export function useLocationContext() {
+  const context = useContext(LocationContext);
+  if (!context) {
+    throw new Error(
+      "useLocationContext must be used within a LocationContextProvider"
+    );
+  }
+  return context;
 }

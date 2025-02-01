@@ -6,8 +6,17 @@
 //   },
 // }
 
-export interface GeoProps {
-  distributorId: number;
+export type GeoProps = {
   lat: number;
   lng: number;
-}
+  distributorId: string;
+};
+
+// E no Maps:
+export type MapsProps = {
+  locations: Array<{
+    lat: number;
+    lng: number;
+    distributorId: number;
+  }>;
+};

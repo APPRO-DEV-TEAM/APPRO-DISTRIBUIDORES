@@ -16,11 +16,14 @@ import { Search } from "./components/ui/search";
 
 import { useForm, Controller, FieldValues } from "react-hook-form";
 
-import { LocationProvider } from "./contexts/location-context";
+import { useSyncLocations } from "./hooks/use-sync-locations";
+import { useLocationContext } from "./contexts/location-context";
 
 function App() {
   const { control, handleSubmit } = useForm();
+  const { geoDistributorsLocation } = useLocationContext();
 
+  useSyncLocations();
   const handleResults = (data: PredictionsResultsProps) => {
     console.log("Resultados atualizados:", data.places);
   };
@@ -178,9 +181,7 @@ function App() {
             </Tabs.Content>
             <Tabs.Content value="map">
               <section className="flex justify-center">
-                <LocationProvider>
-                  <Maps />
-                </LocationProvider>
+                <Maps locations={geoDistributorsLocation} />
               </section>
             </Tabs.Content>
           </Tabs.Container>

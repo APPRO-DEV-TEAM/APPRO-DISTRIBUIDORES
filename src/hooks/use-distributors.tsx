@@ -1,22 +1,6 @@
-// src/hooks/use-distributors.ts
-import { useState, useCallback } from "react";
-import { api } from "../services/api";
-import { DistributorProps } from "../types/distributors.types";
-import { useLocate } from "./use-locate";
+// src/hooks/use-distributors.tsx
+import { useDistributorsContext } from "../contexts/distributors-context";
 
-export const useDistributors = () => {
-  const [distributors, setDistributors] = useState<DistributorProps[]>([]);
-  const { handleDistributorsLocation } = useLocate();
-
-  const loadDistributors = useCallback(async () => {
-    try {
-      const response = await api.get<DistributorProps[]>("/distributors");
-      setDistributors(response.data);
-      handleDistributorsLocation(response.data);
-    } catch (error) {
-      console.error("Erro ao buscar distribuidores:", error);
-    }
-  }, [handleDistributorsLocation]);
-
-  return { distributors, loadDistributors };
-};
+export function useDistributors() {
+  return useDistributorsContext();
+}

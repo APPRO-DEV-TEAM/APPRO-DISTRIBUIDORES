@@ -16,6 +16,8 @@ import { Search } from "./components/ui/search";
 
 import { useForm, Controller, FieldValues } from "react-hook-form";
 
+import { LocationProvider } from "./contexts/location-context";
+
 function App() {
   const { control, handleSubmit } = useForm();
 
@@ -176,7 +178,9 @@ function App() {
             </Tabs.Content>
             <Tabs.Content value="map">
               <section className="flex justify-center">
-                <Maps />
+                <LocationProvider>
+                  <Maps />
+                </LocationProvider>
               </section>
             </Tabs.Content>
           </Tabs.Container>

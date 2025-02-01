@@ -5,7 +5,7 @@ export const useLocate = () => {
   const context = useContext(LocationContext);
 
   if (!context) {
-    throw new Error("useSearch must be used within a SearchProvider");
+    throw new Error("useLocate must be used within a LocationProvider");
   }
 
   return context;

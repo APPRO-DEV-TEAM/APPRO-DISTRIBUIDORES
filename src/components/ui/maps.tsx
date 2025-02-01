@@ -1,4 +1,9 @@
-import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
+import {
+  AdvancedMarker,
+  APIProvider,
+  Map,
+  Pin,
+} from "@vis.gl/react-google-maps";
 import { useLocate } from "../../hooks/use-locate";
 
 const center = {
@@ -21,6 +26,7 @@ export function Maps() {
             width: "100%",
             height: "500px",
           }}
+          mapId="fee4406f23c81cde"
         >
           {geo ? (
             geo.map((location) => (
@@ -28,11 +34,7 @@ export function Maps() {
                 key={location.distributorId}
                 position={{ lat: location.lat, lng: location.lng }}
               >
-                <div className="rounded-lg bg-white p-2 shadow-lg">
-                  <h2 className="text-lg font-bold">Distribuidor</h2>
-                  <p>Latitude: {location.lat}</p>
-                  <p>Longitude: {location.lng}</p>
-                </div>
+                <Pin borderColor="#000" glyphColor="#000" />
               </AdvancedMarker>
             ))
           ) : (

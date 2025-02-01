@@ -5,7 +5,7 @@ import { DistributorProps } from "@/types/distributors.types";
 
 type LocationContextData = {
   handleDistributorsLocation: (distributors: DistributorProps[]) => void;
-  distributorsGeolocation: GeoProps[] | null;
+  geoDistributorsLocation: () => GeoProps[] | null;
 };
 
 export const LocationContext = createContext<LocationContextData>(
@@ -37,10 +37,14 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
     setDistributorsGeolocation(validLocations);
   }
 
+  function geoDistributorsLocation() {
+    return distributorsGeolocation;
+  }
+
   return (
     <LocationContext.Provider
       value={{
-        distributorsGeolocation,
+        geoDistributorsLocation,
         handleDistributorsLocation,
       }}
     >

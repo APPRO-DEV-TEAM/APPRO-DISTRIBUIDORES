@@ -1,22 +1,15 @@
 import { createContext, useState } from "react";
-import type { GeoProps } from "../types/geo.types";
+
 import type {
   SearchProviderProps,
   PlaceProps,
 } from "src/components/ui/search/search.types";
 
 export type SearchContextData = {
-  selectedPlace: PlaceProps | null;
-  region: string;
-  cep: string;
-  geo: GeoProps[];
-  inputValue: string;
   results: PlaceProps[];
-  setGeo: (geo: GeoProps[]) => void;
-  setCep: (cep: string) => void;
-  setRegion: (region: string) => void;
   handleSearch: (value: string) => Promise<void>;
-  setSelectedPlace: (place: PlaceProps) => void;
+  getInputValue: () => string;
+  getPredictionsResults: () => PlaceProps[];
 };
 
 export const SearchContext = createContext<SearchContextData>(
@@ -29,21 +22,17 @@ export function SearchContextProvider({
 }: SearchProviderProps) {
   const [inputValue, setInputValue] = useState("");
   const [results, setResults] = useState<PlaceProps[]>([]);
-  const [selectedPlace, setSelectedPlace] = useState<PlaceProps | null>(null);
-  const [region, setRegion] = useState("");
-  const [cep, setCep] = useState("");
-  const [geo, setGeo] = useState<GeoProps[]>([]);
 
   const handleSearch = async (search: string) => {
     try {
       setInputValue(search);
 
-      if (search.length < 3) {
+      if (search.length < 5) {
         setResults([]);
         return;
       }
 
-      const apiKey = process.env.REACT_APP_GOOGLE_API_KEY; // 🔥 Use variável de ambiente
+      const apiKey = "AIzaSyATFFlBVvbstEAytcAChHNX73TIrsFmGzU";
       if (!apiKey) throw new Error("API Key não definida!");
 
       const response = await fetch(
@@ -74,20 +63,21 @@ export function SearchContextProvider({
     }
   };
 
+  const getInputValue = () => {
+    return inputValue;
+  };
+
+  const getPredictionsResults = () => {
+    return results;
+  };
+
   return (
     <SearchContext.Provider
       value={{
-        geo,
-        cep,
-        region,
         results,
-        inputValue,
-        selectedPlace,
-        setSelectedPlace,
         handleSearch,
-        setRegion,
-        setCep,
-        setGeo,
+        getInputValue,
+        getPredictionsResults,
       }}
     >
       {children}

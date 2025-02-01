@@ -1,72 +1,34 @@
-"use client";
-import { useEffect, useState } from "react";
-
-import { useForm, Controller } from "react-hook-form";
-
-// import { Input } from "./components/ui/input";
 import { SelectInput } from "./components/ui/select";
 import { InputMask } from "./components/ui/input-mask";
 import { Card } from "./components/ui/card";
 import { Tabs } from "./components/ui/tabs";
 import { Maps } from "./components/ui/maps";
-import { Search } from "./components/ui/search";
-import { Footer } from "./components/ui/footer";
+
+import { SearchIcon } from "lucide-react";
 
 import { Local } from "./assets/icons/local";
 import { List } from "./assets/icons/list";
 
 import bannerWeb from "./assets/banner-web.png";
 import bannerMobile from "./assets/banner-mobile.png";
+import { PredictionsResultsProps } from "./components/ui/search/search.types";
+import { Search } from "./components/ui/search";
 
-import { SearchIcon } from "lucide-react";
-
-import { PlaceProps } from "./components/ui/search/search.types";
-import { MaskNumber } from "./utils/Mask";
-
-import { DistributorProps } from "./types/distributors.types";
-import { useLocate } from "./hooks/use-locate";
-
-import { api } from "./services/api";
-import { useDistributors } from "./hooks/use-distributors";
-import { Control } from "leaflet";
-
-export interface PlacesProps {
-  places: PlaceProps[];
-}
-
-const REGIONS = [
-  { id: "1", value: "norte", label: "Norte" },
-  { id: "2", value: "nordeste", label: "Nordeste" },
-  { id: "3", value: "centrooeste", label: "Centro-Oeste" },
-  { id: "4", value: "sudeste", label: "Sudeste" },
-  { id: "5", value: "sul", label: "Sul" },
-];
+import { useForm, Controller, FieldValues } from "react-hook-form";
 
 function App() {
-  const { control, handleSubmit } = useForm({
-    defaultValues: {
-      region: "norte",
-      cep: "",
-      location: null,
-    },
-  });
-  // const [region, setRegion] = useState<string>();
-  // const [cep, setCep] = useState<string>();
-  // const [selectedLocation, setSelectedLocation] = useState<PlaceProps | null>(
-  //   null
-  // );
+  const { control, handleSubmit } = useForm();
 
-  const { distributors, loadDistributors } = useDistributors();
+  const handleResults = (data: PredictionsResultsProps) => {
+    console.log("Resultados atualizados:", data.places);
+  };
 
-  console.log("App rendered");
-
-  useEffect(() => {
-    console.log("Efeito de carregamento de distribuidores disparado");
-    loadDistributors();
-  }, [loadDistributors]);
+  const handleSubmitSearch = (data: FieldValues) => {
+    console.log("Buscando por:", data);
+  };
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex h-screen flex-col items-center gap-4">
       <div className="relative h-[400px] w-full justify-center bg-gray-300">
         <img
           src={bannerMobile}
@@ -76,12 +38,12 @@ function App() {
         <img
           src={bannerWeb}
           alt="banner"
-          className="z-0 hidden min-h-full object-cover [@media(min-width:485px)]:block" // Exibe a partir de 485px
+          className="z-0 hidden min-h-full w-[100vw] object-cover [@media(min-width:485px)]:block" // Exibe a partir de 485px
         />
       </div>
 
       <div className="z-10 flex w-[90vw] items-center justify-center sm:w-[80vw]">
-        <div className="mt-[50px] flex w-full flex-col items-center justify-center gap-6 rounded-2xl bg-zinc-800 px-8 py-6 sm:px-16 sm:py-8 md:px-10 md:py-10">
+        <div className="mt-[50px] flex w-full flex-col items-center justify-center gap-6 rounded-2xl bg-zinc-800 px-8 py-6 sm:mt-[-50px] sm:px-16 sm:py-8 md:mt-[-60px] md:px-10 md:py-10 lg:mt-[150px]">
           <span className="text-center text-base font-light text-white sm:text-lg md:text-xl lg:text-start lg:text-[38px]">
             Encontre o{" "}
             <span className="font-dmSans bg-gradient-to-r from-[#ffe1b7] via-[#fff0d7] to-[#a79172] bg-clip-text font-medium text-transparent">
@@ -91,31 +53,29 @@ function App() {
           </span>
           <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
             <div className="h-full w-full flex-1">
-              <Search.Root>
-                <Search.Input icon={SearchIcon} />
+              <Search.Root onResultChange={handleResults}>
+                <Search.Input
+                  icon={SearchIcon}
+                  onSearch={(value: string) =>
+                    handleSubmit((data) =>
+                      handleSubmitSearch({ ...data, search: value })
+                    )()
+                  }
+                />
                 <Search.List>
                   <Search.Item
                     renderItem={(place) => (
-                      <Controller
-                        name="location"
-                        control={control}
-                        render={({ field }) => (
-                      <div className="flex flex-col items-start gap-2">
-                        <button
-                          key={Math.random()}
-                          className="w-full cursor-pointer items-start justify-start p-3 hover:bg-gray-50"
-                          onClick={() => handleSelectLocation(place)}
-                        >
-                          <p className="text-start font-medium text-gray-800">
-                            {place.displayName.text}{" "}
-                          </p>
-                          <p className="text-start text-sm text-gray-600">
-                            {place.formattedAddress}
-                          </p>
-                        </button>
+                      <div
+                        key={place.formattedAddress}
+                        className="cursor-pointer p-3 hover:bg-gray-50"
+                      >
+                        <p className="font-medium text-gray-800">
+                          {place.displayName.text}{" "}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {place.formattedAddress}
+                        </p>
                       </div>
-                        )}
-                      
                     )}
                   />
                 </Search.List>
@@ -125,23 +85,28 @@ function App() {
         </div>
       </div>
 
-      <div className="flex min-h-full w-[90vw] flex-1 flex-col gap-6 overflow-y-visible sm:w-[80vw]">
+      <div className="flex h-full w-[90vw] flex-col gap-6 sm:w-[80vw]">
         <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
           <Controller
-            name="region"
             control={control}
+            name="region"
             render={({ field }) => (
               <SelectInput
                 placeholder="Região"
                 onChange={field.onChange}
-                options={REGIONS}
+                options={[
+                  { id: "1", value: "norte", label: "Norte" },
+                  { id: "2", value: "nordeste", label: "Nordeste" },
+                  { id: "3", value: "centrooeste", label: "Centro-Oeste" },
+                  { id: "4", value: "sudeste", label: "Sudeste" },
+                  { id: "5", value: "sul", label: "Sul" },
+                ]}
               />
             )}
           />
-
           <Controller
-            name="cep"
             control={control}
+            name="state"
             render={({ field }) => <InputMask onChange={field.onChange} />}
           />
         </div>
@@ -159,26 +124,54 @@ function App() {
 
             <Tabs.Content value="list">
               <section className="flex flex-wrap justify-center gap-4 self-stretch">
-                {distributors.map((distributor: DistributorProps) => {
-                  return (
-                    <Card
-                      title={distributor.region}
-                      name={
-                        distributor.contactFirstName +
-                        " " +
-                        distributor.contactLastName
-                      }
-                      address={distributor.address}
-                      phone={
-                        distributor.phoneNumber
-                          ? MaskNumber().mask(distributor.phoneNumber)
-                          : ""
-                      }
-                      whatsapp={MaskNumber().mask(distributor.whatsappNumber)}
-                      email={distributor.contactEmail}
-                    />
-                  );
-                })}
+                <Card
+                  title="São Paulo - Zona Sul"
+                  name="Ricardo Carvalho"
+                  address="14020-750 - Brasil"
+                  phone="(21) 99264-5278"
+                  whatsapp="(21) 99264-5278"
+                  email="contato@distribuidor.com.br"
+                />
+                <Card
+                  title="São Paulo - Zona Sul"
+                  name="Ricardo Carvalho"
+                  address="14020-750 - Brasil"
+                  phone="(21) 99264-5278"
+                  whatsapp="(21) 99264-5278"
+                  email="contato@distribuidor.com.br"
+                />
+                <Card
+                  title="São Paulo - Zona Sul"
+                  name="Ricardo Carvalho"
+                  address="14020-750 - Brasil"
+                  phone="(21) 99264-5278"
+                  whatsapp="(21) 99264-5278"
+                  email="contato@distribuidor.com.br"
+                />
+                <Card
+                  title="São Paulo - Zona Sul"
+                  name="Ricardo Carvalho"
+                  address="14020-750 - Brasil"
+                  phone="(21) 99264-5278"
+                  whatsapp="(21) 99264-5278"
+                  email="contato@distribuidor.com.br"
+                />
+                <Card
+                  title="São Paulo - Zona Sul"
+                  name="Ricardo Carvalho"
+                  address="14020-750 - Brasil"
+                  phone="(21) 99264-5278"
+                  whatsapp="(21) 99264-5278"
+                  email="contato@distribuidor.com.br"
+                />
+                <Card
+                  title="São Paulo - Zona Sul"
+                  name="Ricardo Carvalho"
+                  address="14020-750 - Brasil"
+                  phone="(21) 99264-5278"
+                  whatsapp="(21) 99264-5278"
+                  email="contato@distribuidor.com.br"
+                />
               </section>
             </Tabs.Content>
             <Tabs.Content value="map">
@@ -189,8 +182,6 @@ function App() {
           </Tabs.Container>
         </Tabs.Root>
       </div>
-
-      <Footer />
     </div>
   );
 }

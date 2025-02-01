@@ -7,7 +7,9 @@ interface SearchInputProps {
 }
 
 export function SearchInput({ icon: Icon, onSearch }: SearchInputProps) {
-  const { inputValue, handleSearch } = useSearch();
+  const { getInputValue, handleSearch } = useSearch();
+
+  const inputValue = getInputValue();
 
   return (
     <div className="flex w-[70vw] flex-row items-center rounded-xl border bg-slate-100 sm:h-16">

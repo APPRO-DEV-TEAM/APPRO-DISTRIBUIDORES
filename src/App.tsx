@@ -1,4 +1,7 @@
-import { useState } from "react";
+"use client";
+import { useEffect, useState } from "react";
+
+import { useForm, Controller } from "react-hook-form";
 
 // import { Input } from "./components/ui/input";
 import { SelectInput } from "./components/ui/select";
@@ -6,39 +9,62 @@ import { InputMask } from "./components/ui/input-mask";
 import { Card } from "./components/ui/card";
 import { Tabs } from "./components/ui/tabs";
 import { Maps } from "./components/ui/maps";
-
-// import { Search as SearchIcon } from "lucide-react";
+import { Search } from "./components/ui/search";
+import { Footer } from "./components/ui/footer";
 
 import { Local } from "./assets/icons/local";
 import { List } from "./assets/icons/list";
 
 import bannerWeb from "./assets/banner-web.png";
 import bannerMobile from "./assets/banner-mobile.png";
-import { Search } from "./components/ui/search";
-import { PredictionsResultsProps } from "./components/ui/search/search.types";
+
 import { SearchIcon } from "lucide-react";
 
-interface PlaceProps {
-  formattedAddress: string;
-  displayName: {
-    text: string;
-    languageCode: string;
-  };
-}
+import { PlaceProps } from "./components/ui/search/search.types";
+import { MaskNumber } from "./utils/Mask";
+
+import { DistributorProps } from "./types/distributors.types";
+import { useLocate } from "./hooks/use-locate";
+
+import { api } from "./services/api";
+import { useDistributors } from "./hooks/use-distributors";
+import { Control } from "leaflet";
 
 export interface PlacesProps {
   places: PlaceProps[];
 }
 
+const REGIONS = [
+  { id: "1", value: "norte", label: "Norte" },
+  { id: "2", value: "nordeste", label: "Nordeste" },
+  { id: "3", value: "centrooeste", label: "Centro-Oeste" },
+  { id: "4", value: "sudeste", label: "Sudeste" },
+  { id: "5", value: "sul", label: "Sul" },
+];
+
 function App() {
-  const [value, setValue] = useState("");
-  const [cep, setCep] = useState("");
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      region: "norte",
+      cep: "",
+      location: null,
+    },
+  });
+  // const [region, setRegion] = useState<string>();
+  // const [cep, setCep] = useState<string>();
+  // const [selectedLocation, setSelectedLocation] = useState<PlaceProps | null>(
+  //   null
+  // );
 
-  const handleResults = (data: PredictionsResultsProps) => {
-    console.log("Resultados atualizados:", data.places);
-  };
+  const { distributors, loadDistributors } = useDistributors();
 
-  console.log(value, cep);
+  console.log("App rendered");
+
+  useEffect(() => {
+    console.log("Efeito de carregamento de distribuidores disparado");
+    loadDistributors();
+  }, [loadDistributors]);
+
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="relative h-[400px] w-full justify-center bg-gray-300">
@@ -65,22 +91,31 @@ function App() {
           </span>
           <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
             <div className="h-full w-full flex-1">
-              <Search.Root onResultChange={handleResults}>
+              <Search.Root>
                 <Search.Input icon={SearchIcon} />
                 <Search.List>
                   <Search.Item
                     renderItem={(place) => (
-                      <div
-                        key={place.formattedAddress}
-                        className="cursor-pointer p-3 hover:bg-gray-50"
-                      >
-                        <p className="font-medium text-gray-800">
-                          {place.displayName.text}{" "}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {place.formattedAddress}
-                        </p>
+                      <Controller
+                        name="location"
+                        control={control}
+                        render={({ field }) => (
+                      <div className="flex flex-col items-start gap-2">
+                        <button
+                          key={Math.random()}
+                          className="w-full cursor-pointer items-start justify-start p-3 hover:bg-gray-50"
+                          onClick={() => handleSelectLocation(place)}
+                        >
+                          <p className="text-start font-medium text-gray-800">
+                            {place.displayName.text}{" "}
+                          </p>
+                          <p className="text-start text-sm text-gray-600">
+                            {place.formattedAddress}
+                          </p>
+                        </button>
                       </div>
+                        )}
+                      
                     )}
                   />
                 </Search.List>
@@ -90,20 +125,25 @@ function App() {
         </div>
       </div>
 
-      <div className="w-[90vw overflow-y-vi flex min-h-full flex-1 flex-col gap-6 sm:w-[80vw]">
+      <div className="flex min-h-full w-[90vw] flex-1 flex-col gap-6 overflow-y-visible sm:w-[80vw]">
         <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
-          <SelectInput
-            placeholder="Região"
-            onChange={setValue}
-            options={[
-              { id: "1", value: "norte", label: "Norte" },
-              { id: "2", value: "nordeste", label: "Nordeste" },
-              { id: "3", value: "centrooeste", label: "Centro-Oeste" },
-              { id: "4", value: "sudeste", label: "Sudeste" },
-              { id: "5", value: "sul", label: "Sul" },
-            ]}
+          <Controller
+            name="region"
+            control={control}
+            render={({ field }) => (
+              <SelectInput
+                placeholder="Região"
+                onChange={field.onChange}
+                options={REGIONS}
+              />
+            )}
           />
-          <InputMask onChange={setCep} />
+
+          <Controller
+            name="cep"
+            control={control}
+            render={({ field }) => <InputMask onChange={field.onChange} />}
+          />
         </div>
 
         <Tabs.Root>
@@ -119,54 +159,26 @@ function App() {
 
             <Tabs.Content value="list">
               <section className="flex flex-wrap justify-center gap-4 self-stretch">
-                <Card
-                  title="São Paulo - Zona Sul"
-                  name="Ricardo Carvalho"
-                  address="14020-750 - Brasil"
-                  phone="(21) 99264-5278"
-                  whatsapp="(21) 99264-5278"
-                  email="contato@distribuidor.com.br"
-                />
-                <Card
-                  title="São Paulo - Zona Sul"
-                  name="Ricardo Carvalho"
-                  address="14020-750 - Brasil"
-                  phone="(21) 99264-5278"
-                  whatsapp="(21) 99264-5278"
-                  email="contato@distribuidor.com.br"
-                />
-                <Card
-                  title="São Paulo - Zona Sul"
-                  name="Ricardo Carvalho"
-                  address="14020-750 - Brasil"
-                  phone="(21) 99264-5278"
-                  whatsapp="(21) 99264-5278"
-                  email="contato@distribuidor.com.br"
-                />
-                <Card
-                  title="São Paulo - Zona Sul"
-                  name="Ricardo Carvalho"
-                  address="14020-750 - Brasil"
-                  phone="(21) 99264-5278"
-                  whatsapp="(21) 99264-5278"
-                  email="contato@distribuidor.com.br"
-                />
-                <Card
-                  title="São Paulo - Zona Sul"
-                  name="Ricardo Carvalho"
-                  address="14020-750 - Brasil"
-                  phone="(21) 99264-5278"
-                  whatsapp="(21) 99264-5278"
-                  email="contato@distribuidor.com.br"
-                />
-                <Card
-                  title="São Paulo - Zona Sul"
-                  name="Ricardo Carvalho"
-                  address="14020-750 - Brasil"
-                  phone="(21) 99264-5278"
-                  whatsapp="(21) 99264-5278"
-                  email="contato@distribuidor.com.br"
-                />
+                {distributors.map((distributor: DistributorProps) => {
+                  return (
+                    <Card
+                      title={distributor.region}
+                      name={
+                        distributor.contactFirstName +
+                        " " +
+                        distributor.contactLastName
+                      }
+                      address={distributor.address}
+                      phone={
+                        distributor.phoneNumber
+                          ? MaskNumber().mask(distributor.phoneNumber)
+                          : ""
+                      }
+                      whatsapp={MaskNumber().mask(distributor.whatsappNumber)}
+                      email={distributor.contactEmail}
+                    />
+                  );
+                })}
               </section>
             </Tabs.Content>
             <Tabs.Content value="map">
@@ -178,11 +190,7 @@ function App() {
         </Tabs.Root>
       </div>
 
-      <footer className="flex h-20 w-full items-center justify-center bg-zinc-800">
-        <span className="text-sm font-light text-white">
-          © 2021 - Distribuidor APPRO
-        </span>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { PlaceProps } from "./search.types";
-import { useSearch } from "./search-hooks";
+import { useSearch } from "../../../hooks/use-search";
 
 interface SearchItemProps {
   renderItem: (place: PlaceProps) => React.ReactNode;

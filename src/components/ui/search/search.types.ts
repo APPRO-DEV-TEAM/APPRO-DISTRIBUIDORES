@@ -12,12 +12,12 @@ export interface PredictionsResultsProps {
 
 export interface SearchProviderProps {
   children: React.ReactNode;
-  onResultChange: (data: PredictionsResultsProps) => void;
+  onResultChange?: (data: PredictionsResultsProps) => void;
 }
 
 export interface SearchRootProps {
   children: React.ReactNode;
-  onResultChange: (data: PredictionsResultsProps) => void;
+  onResultChange?: (data: PredictionsResultsProps) => void;
 }
 
 export interface SearchItemProps {

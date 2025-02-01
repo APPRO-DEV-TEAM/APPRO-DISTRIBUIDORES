@@ -36,7 +36,7 @@ export const TabOption = ({ value, icon, title }: TabOptionProps) => {
 
   return (
     <button
-      className={`flex flex-row items-center gap-2 border-b-4 pb-3 font-bold ${
+      className={`flex cursor-pointer flex-row items-center gap-2 border-b-4 pb-3 font-bold ${
         activeTab === value
           ? "border-[#846944]"
           : "border-transparent text-gray-500"

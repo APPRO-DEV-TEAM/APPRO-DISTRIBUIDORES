@@ -1,11 +1,12 @@
 import { ElementType } from "react";
-import { useSearch } from "./search-hooks";
+import { useSearch } from "../../../hooks/use-search";
 
 interface SearchInputProps {
   icon?: ElementType;
+  onSearch?: (value: string) => void;
 }
 
-export function SearchInput({ icon: Icon }: SearchInputProps) {
+export function SearchInput({ icon: Icon, onSearch }: SearchInputProps) {
   const { inputValue, handleSearch } = useSearch();
 
   return (
@@ -18,7 +19,10 @@ export function SearchInput({ icon: Icon }: SearchInputProps) {
         placeholder="Digite um endereço..."
       />
       {Icon && (
-        <button className="mr-4 rounded-lg p-3 hover:bg-zinc-300 active:bg-zinc-200 sm:mr-5 sm:p-5">
+        <button
+          onClick={() => onSearch}
+          className="mr-4 cursor-pointer rounded-lg p-3 hover:bg-zinc-300 active:bg-zinc-200 sm:mr-5 sm:p-5"
+        >
           <Icon color="#2B2A2A" />
         </button>
       )}

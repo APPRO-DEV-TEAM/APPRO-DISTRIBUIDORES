@@ -1,5 +1,5 @@
-import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
-import { Loading } from "./loading";
+import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
+import { useSearch } from "../../hooks/use-search";
 
 const containerStyle = {
   width: "100%",
@@ -12,22 +12,28 @@ const center = {
 };
 
 export function Maps() {
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: "AIzaSyATFFlBVvbstEAytcAChHNX73TIrsFmGzU",
-  });
+  const { geo } = useSearch();
 
   return (
     <div id="map" className="w-full sm:w-[80vw]">
-      {isLoaded ? (
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={center}
-          zoom={10}
-        ></GoogleMap>
-      ) : (
-        <Loading />
-      )}
+      <APIProvider apiKey="AIzaSyATFFlBVvbstEAytcAChHNX73TIrsFmGzU">
+        <Map defaultCenter={center} defaultZoom={12} style={containerStyle}>
+          {geo.map((location) => {
+            return (
+              <AdvancedMarker
+                key={location.distributorId}
+                position={{ lat: location.lat, lng: location.lng }}
+              >
+                <div className="rounded-lg bg-white p-2 shadow-lg">
+                  <h2 className="text-lg font-bold">Distribuidor</h2>
+                  <p>Latitude: {location.lat}</p>
+                  <p>Longitude: {location.lng}</p>
+                </div>
+              </AdvancedMarker>
+            );
+          })}
+        </Map>
+      </APIProvider>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useSearch } from "./search-hooks";
+import { useSearch } from "../../../hooks/use-search";
 
 interface SearchListProps {
   children: React.ReactNode;

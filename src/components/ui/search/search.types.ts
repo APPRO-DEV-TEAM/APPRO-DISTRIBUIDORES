@@ -1,9 +1,10 @@
 export interface PlaceProps {
+  id: string;
+  formattedAddress: string;
   displayName: {
     text: string;
     languageCode: string;
   };
-  formattedAddress: string;
 }
 
 export interface PredictionsResultsProps {

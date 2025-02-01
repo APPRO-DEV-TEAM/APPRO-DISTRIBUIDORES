@@ -22,7 +22,7 @@ export function Maps() {
             height: "500px",
           }}
         >
-          {/* {geo && (
+          {geo ? (
             geo.map((location) => (
               <AdvancedMarker
                 key={location.distributorId}
@@ -37,7 +37,7 @@ export function Maps() {
             ))
           ) : (
             <p>Carregando distribuidores...</p>
-          )} */}
+          )}
         </Map>
       </APIProvider>
     </div>

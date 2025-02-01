@@ -1,5 +1,5 @@
 // src/contexts/location-context.tsx
-import { createContext, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 import type { GeoProps } from "../types/geo.types";
 import { DistributorProps } from "@/types/distributors.types";
 
@@ -37,9 +37,9 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
     setDistributorsGeolocation(validLocations);
   }
 
-  function geoDistributorsLocation() {
+  const geoDistributorsLocation = useCallback(() => {
     return distributorsGeolocation;
-  }
+  }, [distributorsGeolocation]);
 
   return (
     <LocationContext.Provider

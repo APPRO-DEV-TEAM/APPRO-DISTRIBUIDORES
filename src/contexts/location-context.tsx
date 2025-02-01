@@ -9,16 +9,21 @@ import {
 import type { GeoProps } from "../types/geo.types";
 import { DistributorProps } from "../types/distributors.types";
 
+// Defina o tipo do contexto
 type LocationContextData = {
   handleDistributorsLocation: (distributors: DistributorProps[]) => void;
   geoDistributorsLocation: GeoProps[];
 };
 
-const LocationContext = createContext<LocationContextData>(
-  {} as LocationContextData
-);
+// Crie o contexto
+const LocationContext = createContext<LocationContextData | null>(null);
 
-export function LocationContextProvider({ children }: { children: ReactNode }) {
+// Provider corrigido
+export const LocationContextProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
   const [geoDistributorsLocation, setGeoDistributorsLocation] = useState<
     GeoProps[]
   >([]);
@@ -37,17 +42,15 @@ export function LocationContextProvider({ children }: { children: ReactNode }) {
 
   return (
     <LocationContext.Provider
-      value={{
-        handleDistributorsLocation,
-        geoDistributorsLocation,
-      }}
+      value={{ handleDistributorsLocation, geoDistributorsLocation }}
     >
       {children}
     </LocationContext.Provider>
   );
-}
+};
 
-export function useLocationContext() {
+// Hook corrigido para Fast Refresh
+export const useLocationContext = (): LocationContextData => {
   const context = useContext(LocationContext);
   if (!context) {
     throw new Error(
@@ -55,4 +58,4 @@ export function useLocationContext() {
     );
   }
   return context;
-}
+};

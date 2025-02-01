@@ -48,7 +48,7 @@ function App() {
       </div>
 
       <div className="z-10 flex w-[90vw] items-center justify-center sm:w-[80vw]">
-        <div className="mt-[50px] flex w-full flex-col items-center justify-center gap-6 rounded-2xl bg-zinc-800 px-8 py-6 sm:mt-[-50px] sm:px-16 sm:py-8 md:mt-[-60px] md:px-10 md:py-10 lg:mt-[30px]">
+        <div className="mt-[40px] flex w-full flex-col items-center justify-center gap-6 rounded-2xl bg-zinc-800 px-8 py-6 sm:mt-[-50px] sm:px-16 sm:py-8 md:mt-[-60px] md:px-10 md:py-10 lg:mt-[140px]">
           <span className="text-center text-base font-light text-white sm:text-lg md:text-xl lg:text-start lg:text-[38px]">
             Encontre o{" "}
             <span className="font-dmSans bg-gradient-to-r from-[#ffe1b7] via-[#fff0d7] to-[#a79172] bg-clip-text font-medium text-transparent">

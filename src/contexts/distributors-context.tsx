@@ -18,11 +18,11 @@ type DistributorsContextData = {
 
 const DistributorsContext = createContext<DistributorsContextData | null>(null);
 
-export function DistributorsContextProvider({
+export const DistributorsContextProvider = ({
   children,
 }: {
   children: ReactNode;
-}) {
+}) => {
   const [distributors, setDistributors] = useState<DistributorProps[]>([]);
   const { handleDistributorsLocation } = useLocationContext(); // Use o hook do contexto de localização
 
@@ -45,7 +45,7 @@ export function DistributorsContextProvider({
       {children}
     </DistributorsContext.Provider>
   );
-}
+};
 
 export function useDistributorsContext() {
   const context = useContext(DistributorsContext);

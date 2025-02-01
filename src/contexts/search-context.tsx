@@ -13,10 +13,10 @@ export type SearchContextData = {
 
 export const SearchContext = createContext<SearchContextData | null>(null);
 
-export function SearchContextProvider({
+export const SearchContextProvider = ({
   children,
   onResultChange,
-}: SearchProviderProps) {
+}: SearchProviderProps) => {
   const [inputValue, setInputValue] = useState("");
   const [results, setResults] = useState<PlaceProps[]>([]);
 
@@ -70,4 +70,4 @@ export function SearchContextProvider({
       {children}
     </SearchContext.Provider>
   );
-}
+};

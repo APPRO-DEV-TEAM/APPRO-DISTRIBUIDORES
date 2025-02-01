@@ -1,7 +1,7 @@
 // src/hooks/use-locate.tsx
 import { useLocationContext } from "../contexts/location-context";
 
-export const useLocate = () => {
+export function useLocate() {
   const context = useLocationContext();
 
   if (!context) {
@@ -9,4 +9,4 @@ export const useLocate = () => {
   }
 
   return context;
-};
+}

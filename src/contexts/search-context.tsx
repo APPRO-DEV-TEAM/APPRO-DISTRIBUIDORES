@@ -1,5 +1,4 @@
 import { createContext, useState } from "react";
-
 import type {
   SearchProviderProps,
   PlaceProps,
@@ -12,9 +11,7 @@ export type SearchContextData = {
   getPredictionsResults: () => PlaceProps[];
 };
 
-export const SearchContext = createContext<SearchContextData>(
-  {} as SearchContextData
-);
+export const SearchContext = createContext<SearchContextData | null>(null);
 
 export function SearchContextProvider({
   children,
@@ -32,7 +29,7 @@ export function SearchContextProvider({
         return;
       }
 
-      const apiKey = "AIzaSyATFFlBVvbstEAytcAChHNX73TIrsFmGzU";
+      const apiKey = "AIzaSyATFFlBVvbstEAytcAChHNX73TIrsFmGzU"; // Evite expor a API key diretamente
       if (!apiKey) throw new Error("API Key não definida!");
 
       const response = await fetch(
@@ -63,22 +60,12 @@ export function SearchContextProvider({
     }
   };
 
-  const getInputValue = () => {
-    return inputValue;
-  };
-
-  const getPredictionsResults = () => {
-    return results;
-  };
+  const getInputValue = () => inputValue;
+  const getPredictionsResults = () => results;
 
   return (
     <SearchContext.Provider
-      value={{
-        results,
-        handleSearch,
-        getInputValue,
-        getPredictionsResults,
-      }}
+      value={{ results, handleSearch, getInputValue, getPredictionsResults }}
     >
       {children}
     </SearchContext.Provider>

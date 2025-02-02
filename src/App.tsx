@@ -115,16 +115,16 @@ function App() {
   }, [fetchDistributors]);
   return (
     <div className="flex h-screen flex-col items-center gap-4">
-      <div className="relative h-[400px] w-full justify-center bg-gray-300">
+      <div className="relative h-[400px] justify-center bg-gray-300">
         <img
           src={bannerMobile}
           alt="banner"
-          className="z-0 min-h-full w-[100vw] object-cover [@media(min-width:485px)]:hidden" // Exibe até 485px
+          className="z-0 min-h-full w-[100vw] min-w-full bg-cover bg-no-repeat object-cover [@media(min-width:640px)]:hidden" // Exibe até 485px
         />
         <img
           src={bannerWeb}
           alt="banner"
-          className="z-0 hidden min-h-full w-[100vw] object-cover [@media(min-width:485px)]:block" // Exibe a partir de 485px
+          className="z-0 hidden min-h-full w-[100vw] min-w-full bg-cover bg-no-repeat object-cover [@media(min-width:640px)]:block" // Exibe a partir de 485px
         />
       </div>
 

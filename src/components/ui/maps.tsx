@@ -22,12 +22,7 @@ export function Maps({ locations, mapCenter }: MapsProps) {
               ? mapCenter
               : { lat: locations[0].lat, lng: locations[0].lng }
           }
-          center={
-            mapCenter?.lat !== 0 && mapCenter?.lng !== 0
-              ? mapCenter
-              : { lat: locations[0].lat, lng: locations[0].lng }
-          }
-          defaultZoom={30}
+          defaultZoom={mapCenter ? 17 : 13}
           style={{
             width: "100%",
             height: "500px",

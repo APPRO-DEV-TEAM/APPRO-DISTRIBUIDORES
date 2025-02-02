@@ -1,3 +1,8 @@
+export interface LocationProps {
+  latitude: number;
+  longitude: number;
+}
+
 export interface PlaceProps {
   id: string;
   formattedAddress: string;
@@ -5,6 +10,7 @@ export interface PlaceProps {
     text: string;
     languageCode: string;
   };
+  location: LocationProps;
 }
 
 export interface PredictionsResultsProps {

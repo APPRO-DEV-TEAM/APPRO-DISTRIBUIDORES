@@ -1,71 +1,94 @@
-import { createContext, useState } from "react";
-import type {
-  SearchProviderProps,
-  PlaceProps,
-} from "src/components/ui/search/search.types";
+import { createContext, useCallback, useState, ReactNode } from "react";
+import { useURLState } from "@/hooks/use-url-state";
+import type { PlaceProps } from "@/types/search.types";
 
 export type SearchContextData = {
-  results: PlaceProps[];
-  handleSearch: (value: string) => Promise<void>;
-  getInputValue: () => string;
-  getPredictionsResults: () => PlaceProps[];
+  predictionResults: PlaceProps[];
+  setPredictionResults: (places: PlaceProps[]) => void;
+  selectedPlace: PlaceProps | null;
+  loadPredictions: (value: string) => Promise<void>;
+  onPlaceSelected: (place: PlaceProps) => void;
 };
 
 export const SearchContext = createContext<SearchContextData | null>(null);
+
+interface SearchProviderProps {
+  children: ReactNode;
+  onResultChange?: (result: { places: PlaceProps[] }) => void;
+}
 
 export const SearchContextProvider = ({
   children,
   onResultChange,
 }: SearchProviderProps) => {
-  const [inputValue, setInputValue] = useState("");
-  const [results, setResults] = useState<PlaceProps[]>([]);
+  const [search, setSearch] = useURLState(
+    "q",
+    "",
+    encodeURIComponent,
+    decodeURIComponent
+  );
+  const [predictionResults, setPredictionResults] = useState<PlaceProps[]>([]);
+  const [selectedPlace, setSelectedPlace] = useState<PlaceProps | null>(null);
 
-  const handleSearch = async (search: string) => {
-    try {
-      setInputValue(search);
+  const loadPredictions = useCallback(
+    async (search: string) => {
+      try {
+        setSearch(search);
 
-      if (search.length < 5) {
-        setResults([]);
-        return;
-      }
-
-      const apiKey = "AIzaSyATFFlBVvbstEAytcAChHNX73TIrsFmGzU"; // Evite expor a API key diretamente
-      if (!apiKey) throw new Error("API Key não definida!");
-
-      const response = await fetch(
-        "https://places.googleapis.com/v1/places:searchText",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Goog-Api-Key": apiKey,
-            "X-Goog-FieldMask":
-              "places.displayName,places.formattedAddress,places.location,places.id",
-          },
-          body: JSON.stringify({ textQuery: search }),
+        if (search.length < 5) {
+          setPredictionResults([]);
+          return;
         }
-      );
 
-      if (!response.ok)
-        throw new Error("Erro na requisição: " + response.statusText);
+        const apiKey = "AIzaSyATFFlBVvbstEAytcAChHNX73TIrsFmGzU";
+        if (!apiKey) throw new Error("API Key não definida!");
 
-      const data = await response.json();
-      const places = data.places || [];
+        const response = await fetch(
+          "https://places.googleapis.com/v1/places:searchText",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Goog-Api-Key": apiKey,
+              "X-Goog-FieldMask":
+                "places.displayName,places.formattedAddress,places.location,places.id",
+            },
+            body: JSON.stringify({ textQuery: search }),
+          }
+        );
 
-      setResults(places);
-      onResultChange?.({ places });
-    } catch (error) {
-      console.error("Erro na busca:", error);
-      setResults([]);
-    }
+        if (!response.ok)
+          throw new Error("Erro na requisição: " + response.statusText);
+
+        const data = await response.json();
+        const places = data.places || [];
+
+        setPredictionResults(places);
+        onResultChange?.({ places });
+      } catch (error) {
+        console.error("Erro na busca:", error);
+        setPredictionResults([]);
+      }
+    },
+    [setSearch, onResultChange]
+  );
+
+  const onPlaceSelected = (place: PlaceProps) => {
+    setSearch(place.displayName.text);
+    setPredictionResults([]);
+    setSelectedPlace(place);
+    console.log("Place selected:", place, search);
   };
-
-  const getInputValue = () => inputValue;
-  const getPredictionsResults = () => results;
 
   return (
     <SearchContext.Provider
-      value={{ results, handleSearch, getInputValue, getPredictionsResults }}
+      value={{
+        predictionResults,
+        setPredictionResults,
+        loadPredictions,
+        onPlaceSelected,
+        selectedPlace,
+      }}
     >
       {children}
     </SearchContext.Provider>

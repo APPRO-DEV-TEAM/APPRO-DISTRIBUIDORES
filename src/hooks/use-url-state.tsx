@@ -9,11 +9,11 @@ export function useURLState<T>(
   const searchParams = new URLSearchParams(window.location.search);
   const existingValue = searchParams.get(key);
 
+  // Estado inicial
   const [state, setState] = useState<T>(
     existingValue ? deserialize(existingValue) : initialState
   );
 
-  // Agora, `memoizedDeserialize` será atualizado corretamente se `deserialize` mudar.
   const memoizedDeserialize = useCallback(deserialize, [deserialize]);
 
   useEffect(() => {
@@ -30,10 +30,11 @@ export function useURLState<T>(
     return () => window.removeEventListener("popstate", handlePopState);
   }, [key, initialState, memoizedDeserialize]);
 
+  // Função para atualizar o estado e a URL
   const updateState = (newState: T) => {
     setState(newState);
     const newParams = new URLSearchParams(window.location.search);
-    newParams.set(key, serialize(newState));
+    newParams.set(key, serialize(newState)); // Serializa para string
 
     window.history.pushState({}, "", `?${newParams.toString()}`);
   };

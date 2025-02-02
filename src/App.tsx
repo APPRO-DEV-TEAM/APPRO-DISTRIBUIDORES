@@ -11,19 +11,66 @@ import { List } from "./assets/icons/list";
 
 import bannerWeb from "./assets/banner-web.png";
 import bannerMobile from "./assets/banner-mobile.png";
-import { PredictionsResultsProps } from "./components/ui/search/search.types";
+import { PlaceProps, PredictionsResultsProps } from "./types/search.types";
 import { Search } from "./components/ui/search";
 
 import { useForm, Controller, FieldValues } from "react-hook-form";
 
-import { useSyncLocations } from "./hooks/use-sync-locations";
-import { useLocationContext } from "./contexts/location-context";
+import { useURLState } from "./hooks/use-url-state";
+import { useSearch } from "./hooks/use-search";
+import { DistributorProps } from "./types/distributors.types";
+import { useCallback, useEffect, useState } from "react";
+import { api } from "./services/api";
+import { GeoProps } from "./types/geo.types";
 
 function App() {
-  const { control, handleSubmit } = useForm();
-  const { geoDistributorsLocation } = useLocationContext();
+  const [distributors, setDistributors] = useState<DistributorProps[]>([]);
+  const [distributorsLocations, setDistributorsLocations] = useState<
+    GeoProps[]
+  >([]);
 
-  useSyncLocations();
+  const [search, setSearch] = useURLState(
+    "q",
+    "",
+    encodeURIComponent,
+    decodeURIComponent
+  );
+  const [region, setRegion] = useURLState(
+    "region",
+    "",
+    encodeURIComponent,
+    decodeURIComponent
+  );
+  const [cep, setCep] = useURLState(
+    "cep",
+    "",
+    encodeURIComponent,
+    decodeURIComponent
+  );
+  const [mapCenter, setMapCenter] = useURLState(
+    "map", // Chave que será usada na URL
+    { lat: 0, lng: 0 }, // Valor inicial
+    (state) => `${state.lat},${state.lng}`, // Serializa para "lat,lng"
+    (state) => {
+      const [lat, lng] = state.split(",").map((coord) => parseFloat(coord));
+      return { lat, lng }; // Desserializa de volta para objeto
+    }
+  );
+
+  const { control, handleSubmit } = useForm();
+
+  const { loadPredictions, predictionResults, setPredictionResults } =
+    useSearch();
+
+  console.log("Região: ", region);
+  console.log("CEP: ", cep);
+  console.log("Busca: ", search);
+  console.log("Centro do mapa: ", mapCenter);
+  console.log("Distribuidores: ", distributors);
+  console.log("Localizações dos distribuidores: ", distributorsLocations);
+  console.log("Autocomplete: ", predictionResults);
+  console.log("--------------------------------------------------");
+
   const handleResults = (data: PredictionsResultsProps) => {
     console.log("Resultados atualizados:", data.places);
   };
@@ -32,6 +79,40 @@ function App() {
     console.log("Buscando por:", data);
   };
 
+  const handlePlaceSelected = (place: PlaceProps) => {
+    setMapCenter({
+      lat: place.location.latitude,
+      lng: place.location.longitude,
+    });
+    setSearch(place.displayName.text);
+    setPredictionResults([]);
+  };
+
+  const handleDistributorsLocation = useCallback(
+    (distributors: DistributorProps[]) => {
+      const newLocations = distributors.map((distributor) => ({
+        lat: distributor.latitude,
+        lng: distributor.longitude,
+        distributorId: distributor.id.toString(), // Converta para string
+      }));
+      setDistributorsLocations(newLocations);
+    },
+    []
+  );
+
+  const fetchDistributors = useCallback(async () => {
+    try {
+      const response = await api.get<DistributorProps[]>("/distributors");
+      setDistributors(response.data);
+      handleDistributorsLocation(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar distribuidores:", error);
+    }
+  }, [handleDistributorsLocation]);
+
+  useEffect(() => {
+    fetchDistributors();
+  }, [fetchDistributors]);
   return (
     <div className="flex h-screen flex-col items-center gap-4">
       <div className="relative h-[400px] w-full justify-center bg-gray-300">
@@ -61,29 +142,39 @@ function App() {
               <Search.Root onResultChange={handleResults}>
                 <Search.Input
                   icon={SearchIcon}
+                  value={search}
+                  onChange={(text: string) => {
+                    setSearch(text);
+                    loadPredictions(text);
+                  }}
                   onSearch={(value: string) =>
-                    handleSubmit((data) =>
-                      handleSubmitSearch({ ...data, search: value })
-                    )()
+                    handleSubmit((data) => {
+                      handleSubmitSearch({ ...data, search: value });
+                    })()
                   }
                 />
-                <Search.List>
-                  <Search.Item
-                    renderItem={(place) => (
-                      <div
+                <Search.List
+                  predictions={predictionResults}
+                  isOpen={true}
+                  renderItem={(place: PlaceProps) => (
+                    <div className="flex flex-col gap-2">
+                      <button
                         key={place.id}
-                        className="cursor-pointer p-3 hover:bg-gray-50"
+                        className="flex-1 cursor-pointer flex-col p-3 hover:bg-gray-50"
+                        onClick={() => {
+                          handlePlaceSelected(place);
+                        }}
                       >
-                        <p className="font-medium text-gray-800">
+                        <p className="text-start font-medium text-gray-800">
                           {place.displayName.text}{" "}
                         </p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-start text-sm text-gray-600">
                           {place.formattedAddress}
                         </p>
-                      </div>
-                    )}
-                  />
-                </Search.List>
+                      </button>
+                    </div>
+                  )}
+                />
               </Search.Root>
             </div>
           </div>
@@ -98,7 +189,11 @@ function App() {
             render={({ field }) => (
               <SelectInput
                 placeholder="Região"
-                onChange={field.onChange}
+                value={region}
+                onChange={(value) => {
+                  setRegion(value);
+                  field.onChange(value);
+                }}
                 options={[
                   { id: "1", value: "norte", label: "Norte" },
                   { id: "2", value: "nordeste", label: "Nordeste" },
@@ -111,8 +206,15 @@ function App() {
           />
           <Controller
             control={control}
-            name="state"
-            render={({ field }) => <InputMask onChange={field.onChange} />}
+            name="cep"
+            render={({ field }) => (
+              <InputMask
+                onChange={(value) => {
+                  setCep(value);
+                  field.onChange(value);
+                }}
+              />
+            )}
           />
         </div>
 
@@ -128,60 +230,33 @@ function App() {
             </Tabs.Options>
 
             <Tabs.Content value="list">
-              <section className="flex flex-wrap justify-center gap-4 self-stretch">
-                <Card
-                  title="São Paulo - Zona Sul"
-                  name="Ricardo Carvalho"
-                  address="14020-750 - Brasil"
-                  phone="(21) 99264-5278"
-                  whatsapp="(21) 99264-5278"
-                  email="contato@distribuidor.com.br"
-                />
-                <Card
-                  title="São Paulo - Zona Sul"
-                  name="Ricardo Carvalho"
-                  address="14020-750 - Brasil"
-                  phone="(21) 99264-5278"
-                  whatsapp="(21) 99264-5278"
-                  email="contato@distribuidor.com.br"
-                />
-                <Card
-                  title="São Paulo - Zona Sul"
-                  name="Ricardo Carvalho"
-                  address="14020-750 - Brasil"
-                  phone="(21) 99264-5278"
-                  whatsapp="(21) 99264-5278"
-                  email="contato@distribuidor.com.br"
-                />
-                <Card
-                  title="São Paulo - Zona Sul"
-                  name="Ricardo Carvalho"
-                  address="14020-750 - Brasil"
-                  phone="(21) 99264-5278"
-                  whatsapp="(21) 99264-5278"
-                  email="contato@distribuidor.com.br"
-                />
-                <Card
-                  title="São Paulo - Zona Sul"
-                  name="Ricardo Carvalho"
-                  address="14020-750 - Brasil"
-                  phone="(21) 99264-5278"
-                  whatsapp="(21) 99264-5278"
-                  email="contato@distribuidor.com.br"
-                />
-                <Card
-                  title="São Paulo - Zona Sul"
-                  name="Ricardo Carvalho"
-                  address="14020-750 - Brasil"
-                  phone="(21) 99264-5278"
-                  whatsapp="(21) 99264-5278"
-                  email="contato@distribuidor.com.br"
-                />
+              <section className="flex flex-wrap justify-center gap-10 self-stretch">
+                {distributors.map((distributor: DistributorProps) => (
+                  <Card
+                    key={distributor.id}
+                    title={distributor.region}
+                    name={`${distributor.contactFirstName} ${distributor.contactLastName}`}
+                    address={distributor.address}
+                    phone={distributor.phoneNumber?.replace(
+                      /(\d{2})(\d{4,5})(\d{4})/,
+                      "($1) $2-$3"
+                    )}
+                    whatsapp={distributor.whatsappNumber.replace(
+                      /(\d{2})(\d{4,5})(\d{4})/,
+                      "($1) $2-$3"
+                    )}
+                    email={distributor.contactEmail}
+                  />
+                ))}
               </section>
             </Tabs.Content>
             <Tabs.Content value="map">
               <section className="flex justify-center">
-                <Maps locations={geoDistributorsLocation} />
+                <Maps
+                  locations={distributorsLocations}
+                  mapCenter={mapCenter}
+                  key={mapCenter.lat}
+                />
               </section>
             </Tabs.Content>
           </Tabs.Container>

@@ -8,25 +8,30 @@ import {
 
 type MapsProps = {
   locations: GeoProps[]; // Use o tipo GeoProps diretamente
+  mapCenter?: { lat: number; lng: number };
 };
 
-const center = {
-  lat: -3.745,
-  lng: -38.523,
-};
-
-export function Maps({ locations }: MapsProps) {
+export function Maps({ locations, mapCenter }: MapsProps) {
   return (
     <div id="map" className="w-full overflow-hidden rounded-2xl sm:w-[80vw]">
       <APIProvider apiKey="AIzaSyCayBJlSt4XIOk3ec0WuTHJpm3P_-MOgmg">
         <Map
-          defaultCenter={center}
-          defaultZoom={12}
+          mapId="fee4406f23c81cde"
+          defaultCenter={
+            mapCenter?.lat !== 0 && mapCenter?.lng !== 0
+              ? mapCenter
+              : { lat: locations[0].lat, lng: locations[0].lng }
+          }
+          center={
+            mapCenter?.lat !== 0 && mapCenter?.lng !== 0
+              ? mapCenter
+              : { lat: locations[0].lat, lng: locations[0].lng }
+          }
+          defaultZoom={30}
           style={{
             width: "100%",
             height: "500px",
           }}
-          mapId="fee4406f23c81cde"
         >
           {locations.map((location) => (
             <AdvancedMarker

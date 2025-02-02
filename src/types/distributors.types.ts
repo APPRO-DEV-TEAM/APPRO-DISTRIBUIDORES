@@ -6,7 +6,7 @@ export interface DistributorProps {
   longitude: number;
   latitude: number;
   whatsappNumber: string;
-  phoneNumber?: string;
+  phoneNumber: string;
   contactEmail: string;
   contactFirstName: string;
   contactLastName: string;

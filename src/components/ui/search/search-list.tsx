@@ -1,15 +1,19 @@
-import { useSearch } from "../../../hooks/use-search";
+import { PlaceProps } from "@/types/search.types";
 
 interface SearchListProps {
-  children: React.ReactNode;
+  renderItem: (place: PlaceProps) => React.ReactNode;
+  predictions?: PlaceProps[];
+  isOpen?: boolean;
 }
 
-export function SearchList({ children }: SearchListProps) {
-  const { results } = useSearch();
-
-  return results.length > 0 ? (
+export function SearchList({
+  renderItem,
+  isOpen = true,
+  predictions = [],
+}: SearchListProps) {
+  return predictions.length > 0 && isOpen ? (
     <div className="absolute mt-2 max-h-96 w-[70vw] overflow-y-scroll rounded-lg border border-gray-200 bg-white shadow-lg">
-      {children}
+      {predictions.map((place) => renderItem(place))}
     </div>
   ) : null;
 }

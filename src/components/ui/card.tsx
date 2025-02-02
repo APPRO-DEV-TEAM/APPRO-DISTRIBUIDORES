@@ -4,8 +4,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Whatsapp = () => <FontAwesomeIcon icon={faWhatsapp} />;
 
+enum PlanEnum {
+  starter = "starter",
+  master = "master",
+  pro = "pro",
+}
+
 interface CardProps {
-  plan?: string;
+  plan: "starter" | "master" | "pro";
   title: string;
   name: string;
   address: string;
@@ -27,11 +33,7 @@ export function Card({
     <section className="p-4">
       <div className="relative flex w-[90vw] flex-col items-center justify-center space-y-4 rounded-2xl bg-[#DEDEDE] px-2 py-10 lg:h-[27rem] lg:w-[22rem]">
         {/* Seção do Plano */}
-        <div className="absolute top-[-10px] left-4 rounded-full bg-[#262626] px-4 py-1 text-white">
-          <span className="text-2xs font-bold text-nowrap">
-            {plan} DISTRIBUIDOR <span className="text-[#FFCF8B]">PRO</span>
-          </span>
-        </div>
+        <LabelPlan plan={plan!} />
 
         {/* Conteúdo Principal */}
         <div className="flex w-full flex-col gap-4 px-8 lg:items-start lg:justify-start">
@@ -64,4 +66,48 @@ export function Card({
       </div>
     </section>
   );
+}
+
+function LabelPlanStarter({ plan }: { plan: "starter" | "master" | "pro" }) {
+  return (
+    <div className="absolute top-[-10px] left-4 rounded-full bg-[#C3C3C3] px-4 py-1 text-white">
+      <span className="text-2xs font-bold text-nowrap text-[#373737]">
+        DISTRIBUIDOR {plan.toUpperCase()}
+      </span>
+    </div>
+  );
+}
+
+function LabelPlanMaster({ plan }: { plan: "starter" | "master" | "pro" }) {
+  return (
+    <div className="absolute top-[-10px] left-4 rounded-full bg-[#1E1E1E] px-4 py-1 text-white">
+      <span className="text-2xs font-bold text-nowrap text-[#FFCF8B]">
+        DISTRIBUIDOR {plan.toUpperCase()}
+      </span>
+    </div>
+  );
+}
+
+function LabelPlanPro({ plan }: { plan: "starter" | "master" | "pro" }) {
+  return (
+    <div className="absolute top-[-10px] left-4 rounded-full bg-[#1E1E1E] px-4 py-1 text-white">
+      <span className="text-2xs font-bold text-nowrap">
+        DISTRIBUIDOR{" "}
+        <span className="text-[#FFCF8B]">{plan.toUpperCase()}</span>
+      </span>
+    </div>
+  );
+}
+
+function LabelPlan({ plan }: { plan: "starter" | "master" | "pro" }) {
+  switch (plan) {
+    case PlanEnum.starter:
+      return <LabelPlanStarter plan={plan} />;
+    case PlanEnum.master:
+      return <LabelPlanMaster plan={plan} />;
+    case PlanEnum.pro:
+      return <LabelPlanPro plan={plan} />;
+    default:
+      return null;
+  }
 }

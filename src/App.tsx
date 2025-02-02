@@ -93,7 +93,7 @@ function App() {
       const newLocations = distributors.map((distributor) => ({
         lat: distributor.latitude,
         lng: distributor.longitude,
-        distributorId: distributor.id.toString(), // Converta para string
+        distributorId: distributor.id.toString(),
       }));
       setDistributorsLocations(newLocations);
     },
@@ -230,10 +230,11 @@ function App() {
             </Tabs.Options>
 
             <Tabs.Content value="list">
-              <section className="flex flex-wrap justify-center gap-10 self-stretch">
+              <section className="flex flex-wrap justify-center gap-6 self-stretch">
                 {distributors.map((distributor: DistributorProps) => (
                   <Card
                     key={distributor.id}
+                    plan="pro"
                     title={distributor.region}
                     name={`${distributor.contactFirstName} ${distributor.contactLastName}`}
                     address={distributor.address}

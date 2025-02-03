@@ -31,7 +31,7 @@ export function Card({
 }: CardProps) {
   return (
     <section className="p-4">
-      <div className="relative flex w-[90vw] flex-col items-center justify-center space-y-4 rounded-2xl bg-[#DEDEDE] px-2 py-10 lg:h-[27rem] lg:w-[22rem]">
+      <div className="relative flex w-[90vw] flex-col items-center justify-center space-y-4 rounded-2xl bg-[#DEDEDE] px-2 py-10 shadow-2xl lg:h-[27rem] lg:w-[22rem]">
         {/* Seção do Plano */}
         <LabelPlan plan={plan!} />
 

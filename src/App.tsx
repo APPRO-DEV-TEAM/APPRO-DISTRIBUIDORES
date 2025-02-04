@@ -92,9 +92,9 @@ function App() {
   const handleDistributorsLocation = useCallback(
     (distributors: DistributorProps[]) => {
       const newLocations = distributors.map((distributor) => ({
-        lat: distributor.latitude,
-        lng: distributor.longitude,
-        distributorId: distributor.id.toString(),
+        lat: distributor.LATITUDE,
+        lng: distributor.LONGITUDE,
+        distributorId: distributor.DISTRIBUTOR_ID.toString(),
       }));
       setDistributorsLocations(newLocations);
     },
@@ -235,20 +235,20 @@ function App() {
               <section className="flex flex-wrap justify-center gap-6 self-stretch">
                 {distributors.map((distributor: DistributorProps) => (
                   <Card
-                    key={distributor.id}
+                    key={distributor.DISTRIBUTOR_ID}
                     plan="pro"
-                    title={distributor.region}
-                    name={`${distributor.contactFirstName} ${distributor.contactLastName}`}
-                    address={distributor.address}
-                    phone={distributor.phoneNumber?.replace(
+                    title={distributor.REGION}
+                    name={`${distributor.FIRST_NAME} ${distributor.LAST_NAME}`}
+                    address={distributor.ADDRESS}
+                    phone={distributor.PHONE_NUMBER?.replace(
                       /(\d{2})(\d{4,5})(\d{4})/,
                       "($1) $2-$3"
                     )}
-                    whatsapp={distributor.whatsappNumber.replace(
+                    whatsapp={distributor.WHATSAPP_NUMBER.replace(
                       /(\d{2})(\d{4,5})(\d{4})/,
                       "($1) $2-$3"
                     )}
-                    email={distributor.contactEmail}
+                    email={distributor.EMAIL}
                   />
                 ))}
               </section>

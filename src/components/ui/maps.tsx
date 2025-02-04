@@ -89,11 +89,11 @@ export function Maps({ locations, mapCenter }: MapsProps) {
                       <Card
                         plan="starter"
                         title="Distribuidor"
-                        name={`${selectedDistributor.contactFirstName} ${selectedDistributor.contactLastName}`}
-                        address={selectedDistributor.address}
-                        phone={selectedDistributor.phoneNumber}
-                        whatsapp={selectedDistributor.whatsappNumber}
-                        email={selectedDistributor.contactEmail}
+                        name={`${selectedDistributor.FIRST_NAME} ${selectedDistributor.LAST_NAME}`}
+                        address={selectedDistributor.ADDRESS}
+                        phone={selectedDistributor.PHONE_NUMBER}
+                        whatsapp={selectedDistributor.WHATSAPP_NUMBER}
+                        email={selectedDistributor.EMAIL}
                       />
                     )}
                   </div>

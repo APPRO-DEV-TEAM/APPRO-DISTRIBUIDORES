@@ -29,22 +29,43 @@ export function Card({
   whatsapp,
   email,
 }: CardProps) {
+  function formatRegionText(title: string) {
+    switch (title) {
+      case "norte":
+        return "Norte - Brasil";
+      case "nordeste":
+        return "Nordeste - Brasil";
+      case "centro-oeste":
+        return "Centro-Oeste - Brasil";
+      case "sudeste":
+        return "Sudeste - Brasil";
+      case "sul":
+        return "Sul - Brasil";
+      default:
+        return "Brasil";
+    }
+  }
+
   return (
     <section className="p-4">
-      <div className="relative flex w-[90vw] flex-col items-center justify-center space-y-4 rounded-2xl bg-[#DEDEDE] px-2 py-10 shadow-2xl lg:h-[27rem] lg:w-[22rem]">
+      <div className="relative flex w-[90vw] flex-col items-center justify-center space-y-4 rounded-2xl bg-[#DEDEDE] px-2 py-10 shadow-2xl lg:h-[27rem] lg:w-[22rem] lg:shadow-none">
         {/* Seção do Plano */}
         <LabelPlan plan={plan!} />
 
         {/* Conteúdo Principal */}
         <div className="flex w-full flex-col gap-4 px-8 lg:items-start lg:justify-start">
           {/* Título */}
-          <h1 className="text-center text-2xl font-bold">{title}</h1>
+          <h1 className="text-center text-2xl font-bold">
+            {formatRegionText(title)}
+          </h1>
 
           {/* Dados de usuário */}
-          <div className="flex flex-col items-center gap-2 lg:items-start lg:justify-start">
+          <div className="flex flex-col items-center gap-2 lg:items-start lg:justify-start lg:text-start">
             <div className="image-wrapper mb-2 h-16 w-16 overflow-hidden rounded-full bg-zinc-400"></div>
             <p className="text-center text-lg font-semibold">{name}</p>
-            <p className="text-center text-lg text-gray-500">{address}</p>
+            <p className="text-center text-lg text-gray-500 lg:text-start">
+              {address}
+            </p>
           </div>
 
           {/* Informações de contato */}

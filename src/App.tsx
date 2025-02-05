@@ -116,7 +116,7 @@ function App() {
   }, [fetchDistributors]);
 
   return (
-    <div className="flex h-screen flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4">
       <div className="relative h-[400px] justify-center bg-gray-300">
         <img
           src={bannerMobile}
@@ -236,7 +236,7 @@ function App() {
                 {distributors.map((distributor: DistributorProps) => (
                   <Card
                     key={distributor.DISTRIBUTOR_ID}
-                    plan="pro"
+                    plan={distributor.PLAN_TYPE}
                     title={distributor.FIRST_NAME}
                     name={`${distributor.FIRST_NAME} ${distributor.LAST_NAME}`}
                     address={distributor.ADDRESS}
@@ -265,8 +265,8 @@ function App() {
           </Tabs.Container>
         </Tabs.Root>
 
-        <Footer />
       </div>
+      <Footer />
     </div>
   );
 }

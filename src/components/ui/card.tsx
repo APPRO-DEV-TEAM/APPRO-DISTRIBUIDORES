@@ -46,7 +46,7 @@ export function Card({
           <div className="flex flex-col items-center gap-2 lg:items-start lg:justify-start lg:text-start">
             <div className="image-wrapper mb-2 h-16 w-16 overflow-hidden rounded-full bg-zinc-400"></div>
             <p className="text-center text-lg font-semibold">{name}</p>
-            <p className="text-center text-lg text-gray-500 lg:text-start">
+            <p className="text-center text-md text-gray-500 lg:text-start">
               {address}
             </p>
           </div>

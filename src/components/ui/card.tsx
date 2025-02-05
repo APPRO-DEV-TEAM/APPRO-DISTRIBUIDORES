@@ -29,23 +29,6 @@ export function Card({
   whatsapp,
   email,
 }: CardProps) {
-  function formatRegionText(title: string) {
-    switch (title) {
-      case "norte":
-        return "Norte - Brasil";
-      case "nordeste":
-        return "Nordeste - Brasil";
-      case "centro-oeste":
-        return "Centro-Oeste - Brasil";
-      case "sudeste":
-        return "Sudeste - Brasil";
-      case "sul":
-        return "Sul - Brasil";
-      default:
-        return "Brasil";
-    }
-  }
-
   return (
     <section className="p-4">
       <div className="relative flex w-[90vw] flex-col items-center justify-center space-y-4 rounded-2xl bg-[#DEDEDE] px-2 py-10 shadow-2xl lg:h-[27rem] lg:w-[22rem] lg:shadow-none">
@@ -56,7 +39,7 @@ export function Card({
         <div className="flex w-full flex-col gap-4 px-8 lg:items-start lg:justify-start">
           {/* Título */}
           <h1 className="text-center text-2xl font-bold">
-            {formatRegionText(title)}
+            {title}
           </h1>
 
           {/* Dados de usuário */}

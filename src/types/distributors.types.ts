@@ -2,8 +2,6 @@ export interface DistributorProps {
   DISTRIBUTOR_ID: string;
   PLAN_TYPE: "pro" | "starter" | "master";
   ADDRESS: string;
-  REGION: "norte" | "nordeste" | "centrooeste" | "sudeste" | "sul";
-  POSTAL_CODE: string;
   LONGITUDE: number;
   LATITUDE: number;
   WHATSAPP_NUMBER: string;

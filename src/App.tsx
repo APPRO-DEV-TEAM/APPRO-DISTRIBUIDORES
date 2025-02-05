@@ -237,7 +237,7 @@ function App() {
                   <Card
                     key={distributor.DISTRIBUTOR_ID}
                     plan="pro"
-                    title={distributor.REGION}
+                    title={distributor.FIRST_NAME}
                     name={`${distributor.FIRST_NAME} ${distributor.LAST_NAME}`}
                     address={distributor.ADDRESS}
                     phone={distributor.PHONE_NUMBER?.replace(

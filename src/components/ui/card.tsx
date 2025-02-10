@@ -53,18 +53,18 @@ export function Card({
 
           {/* Informações de contato */}
           <div className="flex flex-col items-center justify-center gap-4 lg:items-start lg:justify-start">
-            <div className="flex items-center gap-2">
+            <a href={`https://wa.me/${whatsapp}`} className="flex items-center gap-2">
               <Whatsapp />
               <span className="text-md text-gray-700">{whatsapp}</span>
-            </div>
-            <div className="flex items-center gap-2">
+            </a>
+            <a href={`tel:+${phone}`} className="flex items-center gap-2">
               <Phone size={14} />
               <span className="text-md text-gray-700">{phone}</span>
-            </div>
-            <div className="flex items-center gap-2">
+            </a>
+            <a href={`mailto:${email}`} className="flex items-center gap-2">
               <MailsIcon size={14} />
               <span className="text-md text-gray-700">{email}</span>
-            </div>
+            </a>
           </div>
         </div>
       </div>

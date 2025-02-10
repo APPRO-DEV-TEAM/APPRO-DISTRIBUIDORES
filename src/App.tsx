@@ -117,16 +117,16 @@ function App() {
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <div className="relative h-[400px] justify-center bg-gray-300">
+      <div className="relative h-[400px] w-min-[100vw] justify-center bg-gray-300">
         <img
           src={bannerMobile}
           alt="banner"
-          className="z-0 min-h-full w-[100vw] min-w-full bg-cover bg-no-repeat object-cover [@media(min-width:640px)]:hidden" // Exibe até 485px
+          className="z-0 min-h-full w-[100vw] min-w-full bg-cover bg-no-repeat object-cover [@media(min-width:470px)]:hidden" // Exibe até 485px
         />
         <img
           src={bannerWeb}
           alt="banner"
-          className="z-0 hidden min-h-full w-[100vw] min-w-full bg-cover bg-no-repeat object-cover [@media(min-width:640px)]:block" // Exibe a partir de 485px
+          className="z-0 hidden min-h-full w-[100vw] min-w-full bg-cover bg-no-repeat object-cover [@media(min-width:470px)]:block" // Exibe a partir de 485px
         />
       </div>
 
@@ -240,14 +240,8 @@ function App() {
                     title={distributor.FIRST_NAME}
                     name={`${distributor.FIRST_NAME} ${distributor.LAST_NAME}`}
                     address={distributor.ADDRESS}
-                    phone={distributor.PHONE_NUMBER?.replace(
-                      /(\d{2})(\d{4,5})(\d{4})/,
-                      "($1) $2-$3"
-                    )}
-                    whatsapp={distributor.WHATSAPP_NUMBER.replace(
-                      /(\d{2})(\d{4,5})(\d{4})/,
-                      "($1) $2-$3"
-                    )}
+                    phone={distributor.PHONE_NUMBER}
+                    whatsapp={distributor.WHATSAPP_NUMBER}
                     email={distributor.EMAIL}
                   />
                 ))}

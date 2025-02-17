@@ -1,5 +1,3 @@
-import { SelectInput } from "./components/ui/select";
-import { InputMask } from "./components/ui/input-mask";
 import { Card } from "./components/ui/card";
 import { Tabs } from "./components/ui/tabs";
 import { Maps } from "./components/ui/maps";
@@ -23,6 +21,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api } from "./services/api";
 import { GeoProps } from "./types/geo.types";
 import { Footer } from "./components/ui/footer";
+import { SelectInput } from "./components/ui/select";
 
 function App() {
   const [distributors, setDistributors] = useState<DistributorProps[]>([]);
@@ -36,18 +35,24 @@ function App() {
     encodeURIComponent,
     decodeURIComponent
   );
-  const [region, setRegion] = useURLState(
-    "region",
+  const [rangeZone, setRegion] = useURLState(
+    "zone",
     "",
     encodeURIComponent,
     decodeURIComponent
   );
-  const [cep, setCep] = useURLState(
-    "cep",
-    "",
-    encodeURIComponent,
-    decodeURIComponent
-  );
+  // const [region, setRegion] = useURLState(
+  //   "region",
+  //   "",
+  //   encodeURIComponent,
+  //   decodeURIComponent
+  // );
+  // const [cep, setCep] = useURLState(
+  //   "cep",
+  //   "",
+  //   encodeURIComponent,
+  //   decodeURIComponent
+  // );
   const [mapCenter, setMapCenter] = useURLState(
     "map", // Chave que será usada na URL
     { lat: 0, lng: 0 }, // Valor inicial
@@ -63,8 +68,8 @@ function App() {
   const { loadPredictions, predictionResults, setPredictionResults } =
     useSearch();
 
-  console.log("Região: ", region);
-  console.log("CEP: ", cep);
+  // console.log("Região: ", region);
+  // console.log("CEP: ", cep);
   console.log("Busca: ", search);
   console.log("Centro do mapa: ", mapCenter);
   console.log("Distribuidores: ", distributors);
@@ -187,6 +192,33 @@ function App() {
         <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
           <Controller
             control={control}
+            name="rangeZone"
+            render={({ field }) => (
+              <SelectInput
+                placeholder="Distância"
+                value={rangeZone}
+                onChange={(value) => {
+                  setRegion(value);
+                  field.onChange(value);
+                }}
+                options={[
+                  { id: "1", value: "2", label: "2km" },
+                  { id: "2", value: "5", label: "5km" },
+                  { id: "3", value: "10", label: "10km" },
+                  { id: "4", value: "50", label: "50km" },
+                  { id: "5", value: "80", label: "80km" },
+                  { id: "6", value: "100", label: "100km" },
+                  { id: "7", value: "200", label: "200km" },
+                ]}
+              />
+            )}
+          />
+        </div>
+
+        {/* Options */}
+        {/* <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
+          <Controller
+            control={control}
             name="region"
             render={({ field }) => (
               <SelectInput
@@ -218,17 +250,17 @@ function App() {
               />
             )}
           />
-        </div>
+        </div> */}
 
         <Tabs.Root>
           <Tabs.Container defaultValue="list">
             <Tabs.Options>
               <Tabs.Option
                 icon={<List />}
-                title="Exibição de lista"
+                title="Lista"
                 value="list"
               />
-              <Tabs.Option icon={<Local />} title="Visão do mapa" value="map" />
+              <Tabs.Option icon={<Local />} title="Mapa" value="map" />
             </Tabs.Options>
 
             <Tabs.Content value="list">

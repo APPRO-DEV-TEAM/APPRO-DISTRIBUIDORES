@@ -37,22 +37,10 @@ function App() {
   );
   const [rangeZone, setRegion] = useURLState(
     "zone",
-    "",
+    "5",
     encodeURIComponent,
     decodeURIComponent
   );
-  // const [region, setRegion] = useURLState(
-  //   "region",
-  //   "",
-  //   encodeURIComponent,
-  //   decodeURIComponent
-  // );
-  // const [cep, setCep] = useURLState(
-  //   "cep",
-  //   "",
-  //   encodeURIComponent,
-  //   decodeURIComponent
-  // );
   const [mapCenter, setMapCenter] = useURLState(
     "map", // Chave que será usada na URL
     { lat: 0, lng: 0 }, // Valor inicial
@@ -70,12 +58,14 @@ function App() {
 
   // console.log("Região: ", region);
   // console.log("CEP: ", cep);
+  console.log("RangeZone atualizado:", rangeZone);
   console.log("Busca: ", search);
   console.log("Centro do mapa: ", mapCenter);
   console.log("Distribuidores: ", distributors);
   console.log("Localizações dos distribuidores: ", distributorsLocations);
   console.log("Autocomplete: ", predictionResults);
   console.log("--------------------------------------------------");
+
 
   const handleResults = (data: PredictionsResultsProps) => {
     console.log("Resultados atualizados:", data.places);
@@ -84,6 +74,51 @@ function App() {
   const handleSubmitSearch = (data: FieldValues) => {
     console.log("Buscando por:", data);
   };
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setMapCenter({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        () => {
+          // Se o usuário negar a permissão, define um local padrão (ex: São Paulo)
+          setMapCenter({ lat: -23.55052, lng: -46.633308 });
+        }
+      );
+    } else {
+      // Caso o navegador não suporte geolocalização
+      setMapCenter({ lat: -23.55052, lng: -46.633308 });
+    }
+    // eslint-disable-next-line
+  }, []);
+
+  const filterDistributorsByRange = useCallback(
+    (distributors: DistributorProps[], coordinates: { latitude: number, longitude: number }, maxDistanceKm: number) => {
+      const toRadians = (degree: number) => (degree * Math.PI) / 180;
+      const EARTH_RADIUS_KM = 6371; // Raio da Terra em km
+
+      return distributors.filter((distributor) => {
+        const latitudeDifference = toRadians(distributor.LATITUDE - coordinates.latitude);
+        const longitudeDifference = toRadians(distributor.LONGITUDE - coordinates.longitude);
+
+        const targetLatitudeInRadians = toRadians(coordinates.latitude);
+        const distributorLatitudeInRadians = toRadians(distributor.LATITUDE);
+
+        const haversineFormula = Math.sin(latitudeDifference / 2) ** 2 +
+          Math.sin(longitudeDifference / 2) ** 2 * Math.cos(targetLatitudeInRadians) * Math.cos(distributorLatitudeInRadians);
+        const centralAngle = 2 * Math.atan2(Math.sqrt(haversineFormula), Math.sqrt(1 - haversineFormula));
+
+        const distanceBetweenPoints = EARTH_RADIUS_KM * centralAngle; // Distância em km
+
+        return distanceBetweenPoints <= maxDistanceKm;
+      });
+    },
+    []
+  );
 
   const handlePlaceSelected = (place: PlaceProps) => {
     setMapCenter({
@@ -109,12 +144,12 @@ function App() {
   const fetchDistributors = useCallback(async () => {
     try {
       const response = await api.get<DistributorProps[]>("/distributors");
-      setDistributors(response.data);
+      setDistributors(filterDistributorsByRange(response.data, { latitude: mapCenter.lat, longitude: mapCenter.lng }, parseInt(rangeZone)));
       handleDistributorsLocation(response.data);
     } catch (error) {
       console.error("Erro ao buscar distribuidores:", error);
     }
-  }, [handleDistributorsLocation]);
+  }, [filterDistributorsByRange, handleDistributorsLocation, mapCenter, rangeZone]);
 
   useEffect(() => {
     fetchDistributors();
@@ -284,6 +319,7 @@ function App() {
                 <Maps
                   locations={distributorsLocations}
                   mapCenter={mapCenter}
+                  rangeZone={parseInt(rangeZone)}
                   key={mapCenter.lat}
                 />
               </section>

@@ -6,12 +6,13 @@ type MapsProps = {
   locations: GeoProps[]; // Use o tipo GeoProps diretamente
   mapCenter?: { lat: number; lng: number };
   rangeZone?: number;
+  zoom?: number;
 };
 
 import glyph from "@/assets/pin.png";
 import { useEffect, useState } from "react";
 
-export function Maps({ locations, mapCenter, rangeZone }: MapsProps) {
+export function Maps({ locations, mapCenter, rangeZone, zoom = 8 }: MapsProps) {
   const [radius, setRadius] = useState(0);
 
   useEffect(() => {
@@ -38,14 +39,14 @@ export function Maps({ locations, mapCenter, rangeZone }: MapsProps) {
               ? mapCenter
               : { lat: locations[0].lat, lng: locations[0].lng }
           }
-          defaultZoom={mapCenter ? 13 : 13}
+          defaultZoom={zoom}
           style={{ width: "100%", height: "500px" }}
         >
           {radius > 0 &&
             <Circle
               strokeWeight={1}
-              strokeColor={"#FF0000"}
-              fillColor={"#FF0000"}
+              strokeColor={"oklch(0.707 0.165 254.624)"}
+              fillColor={"#1447e6"}
               center={mapCenter}
               radius={radius}
             />

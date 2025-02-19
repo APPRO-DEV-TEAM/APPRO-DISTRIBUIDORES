@@ -23,8 +23,44 @@ import { GeoProps } from "./types/geo.types";
 import { Footer } from "./components/ui/footer";
 import { SelectInput } from "./components/ui/select";
 
+export type Address = {
+  road?: string;
+  quarter?: string;
+  neighbourhood?: string;
+  suburb?: string;
+  city_district?: string;
+  city?: string;
+  municipality?: string;
+  county?: string;
+  state_district?: string;
+  state?: string;
+  ISO3166_2_lvl4?: string;
+  region?: string;
+  postcode?: string;
+  country?: string;
+  country_code?: string;
+};
+
+export type GeoLocation = {
+  place_id: number;
+  licence: string;
+  osm_type: string;
+  osm_id: number;
+  lat: string;
+  lon: string;
+  class: string;
+  type: string;
+  place_rank: number;
+  importance: number;
+  addresstype: string;
+  name: string;
+  display_name: string;
+  address: Address;
+  boundingbox: [string, string, string, string];
+};
 function App() {
   const [distributors, setDistributors] = useState<DistributorProps[]>([]);
+  const [mapZoom, setMapZoom] = useState<number>();
   const [distributorsLocations, setDistributorsLocations] = useState<
     GeoProps[]
   >([]);
@@ -37,7 +73,7 @@ function App() {
   );
   const [rangeZone, setRegion] = useURLState(
     "zone",
-    "5",
+    "25",
     encodeURIComponent,
     decodeURIComponent
   );
@@ -61,6 +97,7 @@ function App() {
   console.log("RangeZone atualizado:", rangeZone);
   console.log("Busca: ", search);
   console.log("Centro do mapa: ", mapCenter);
+  console.log("Zoom do mapa: ", mapZoom);
   console.log("Distribuidores: ", distributors);
   console.log("Localizações dos distribuidores: ", distributorsLocations);
   console.log("Autocomplete: ", predictionResults);
@@ -74,6 +111,21 @@ function App() {
   const handleSubmitSearch = (data: FieldValues) => {
     console.log("Buscando por:", data);
   };
+
+  async function getAddressFromCoords(lat: number, lng: number): Promise<GeoLocation | null> {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Erro na requisição:", error);
+      return null;
+    }
+  }
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -93,6 +145,12 @@ function App() {
       // Caso o navegador não suporte geolocalização
       setMapCenter({ lat: -23.55052, lng: -46.633308 });
     }
+    const fetchAddress = async () => {
+      if (mapCenter.lat === 0 && mapCenter.lng === 0) return;
+      const geo = await getAddressFromCoords(mapCenter.lat, mapCenter.lng);
+      setSearch(geo?.address.municipality || "");
+    }
+    fetchAddress()
     // eslint-disable-next-line
   }, []);
 
@@ -121,11 +179,13 @@ function App() {
   );
 
   const handlePlaceSelected = (place: PlaceProps) => {
+    const zoomLevel = Math.max(3, 15 - Math.log2(Number(rangeZone)));
     setMapCenter({
       lat: place.location.latitude,
       lng: place.location.longitude,
     });
     setSearch(place.displayName.text);
+    setMapZoom(zoomLevel)
     setPredictionResults([]);
   };
 
@@ -240,10 +300,11 @@ function App() {
                   { id: "1", value: "2", label: "2km" },
                   { id: "2", value: "5", label: "5km" },
                   { id: "3", value: "10", label: "10km" },
-                  { id: "4", value: "50", label: "50km" },
-                  { id: "5", value: "80", label: "80km" },
-                  { id: "6", value: "100", label: "100km" },
-                  { id: "7", value: "200", label: "200km" },
+                  { id: "4", value: "25", label: "25km" },
+                  { id: "5", value: "50", label: "50km" },
+                  { id: "6", value: "80", label: "80km" },
+                  { id: "7", value: "100", label: "100km" },
+                  { id: "8", value: "200", label: "200km" },
                 ]}
               />
             )}
@@ -319,6 +380,7 @@ function App() {
                 <Maps
                   locations={distributorsLocations}
                   mapCenter={mapCenter}
+                  zoom={mapZoom || 8}
                   rangeZone={parseInt(rangeZone)}
                   key={mapCenter.lat}
                 />

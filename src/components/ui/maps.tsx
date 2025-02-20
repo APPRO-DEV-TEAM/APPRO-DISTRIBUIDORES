@@ -42,6 +42,7 @@ export function Maps({ locations, mapCenter, rangeZone, zoom = 8 }: MapsProps) {
               ? mapCenter
               : { lat: locations[0].lat, lng: locations[0].lng }
           }
+          onZoomChanged={(zoom) => setMapZoom(zoom.detail.zoom)}
           zoom={mapZoom}
           style={{ width: "100%", height: "500px" }}
         >

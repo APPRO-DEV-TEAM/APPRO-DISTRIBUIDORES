@@ -60,7 +60,12 @@ export type GeoLocation = {
 };
 function App() {
   const [distributors, setDistributors] = useState<DistributorProps[]>([]);
-  const [mapZoom, setMapZoom] = useState<number>();
+  const [mapZoom, setMapZoom] = useURLState(
+    "zoom",
+    "10",
+    encodeURIComponent,
+    decodeURIComponent
+  );
   const [distributorsLocations, setDistributorsLocations] = useState<
     GeoProps[]
   >([]);
@@ -154,6 +159,7 @@ function App() {
     // eslint-disable-next-line
   }, []);
 
+
   const filterDistributorsByRange = useCallback(
     (distributors: DistributorProps[], coordinates: { latitude: number, longitude: number }, maxDistanceKm: number) => {
       const toRadians = (degree: number) => (degree * Math.PI) / 180;
@@ -179,13 +185,11 @@ function App() {
   );
 
   const handlePlaceSelected = (place: PlaceProps) => {
-    const zoomLevel = Math.max(3, 15 - Math.log2(Number(rangeZone)));
     setMapCenter({
       lat: place.location.latitude,
       lng: place.location.longitude,
     });
     setSearch(place.displayName.text);
-    setMapZoom(zoomLevel)
     setPredictionResults([]);
   };
 
@@ -205,10 +209,12 @@ function App() {
     try {
       const response = await api.get<DistributorProps[]>("/distributors");
       setDistributors(filterDistributorsByRange(response.data, { latitude: mapCenter.lat, longitude: mapCenter.lng }, parseInt(rangeZone)));
+      setMapZoom(Math.max(3, 15 - Math.log2(Number(rangeZone))).toString());
       handleDistributorsLocation(response.data);
     } catch (error) {
       console.error("Erro ao buscar distribuidores:", error);
     }
+    //eslint-disable-next-line
   }, [filterDistributorsByRange, handleDistributorsLocation, mapCenter, rangeZone]);
 
   useEffect(() => {
@@ -380,7 +386,7 @@ function App() {
                 <Maps
                   locations={distributorsLocations}
                   mapCenter={mapCenter}
-                  zoom={mapZoom || 8}
+                  zoom={parseInt(mapZoom) || 8}
                   rangeZone={parseInt(rangeZone)}
                   key={mapCenter.lat}
                 />

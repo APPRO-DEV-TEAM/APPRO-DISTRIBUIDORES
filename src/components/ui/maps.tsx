@@ -14,10 +14,13 @@ import { useEffect, useState } from "react";
 
 export function Maps({ locations, mapCenter, rangeZone, zoom = 8 }: MapsProps) {
   const [radius, setRadius] = useState(0);
+  const [mapZoom, setMapZoom] = useState(zoom);
 
   useEffect(() => {
+    setMapZoom(zoom)
     setRadius(Number(rangeZone) * 1000 || 0);
-  }, [rangeZone]);
+  }, [rangeZone, zoom]);
+
   const [selectedMarker, setSelectedMarker] = useState<string | null>(null);
 
 
@@ -39,7 +42,7 @@ export function Maps({ locations, mapCenter, rangeZone, zoom = 8 }: MapsProps) {
               ? mapCenter
               : { lat: locations[0].lat, lng: locations[0].lng }
           }
-          defaultZoom={zoom}
+          zoom={mapZoom}
           style={{ width: "100%", height: "500px" }}
         >
           {radius > 0 &&

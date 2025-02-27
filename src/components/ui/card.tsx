@@ -103,7 +103,7 @@ function LabelPlanPro({ plan }: { plan: "starter" | "master" | "pro" }) {
   );
 }
 
-function LabelPlan({ plan }: { plan: "starter" | "master" | "pro" }) {
+export function LabelPlan({ plan }: { plan: "starter" | "master" | "pro" }) {
   switch (plan) {
     case PlanEnum.starter:
       return <LabelPlanStarter plan={plan} />;

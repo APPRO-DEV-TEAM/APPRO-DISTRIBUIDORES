@@ -78,7 +78,7 @@ function App() {
   );
   const [rangeZone, setRegion] = useURLState(
     "zone",
-    "25",
+    "200",
     encodeURIComponent,
     decodeURIComponent
   );

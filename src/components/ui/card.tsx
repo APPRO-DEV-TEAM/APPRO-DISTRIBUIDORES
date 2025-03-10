@@ -18,6 +18,7 @@ interface CardProps {
   phone: string;
   whatsapp: string;
   email: string;
+  avatar: string | null;
 }
 
 export function Card({
@@ -28,6 +29,7 @@ export function Card({
   phone,
   whatsapp,
   email,
+  avatar
 }: CardProps) {
   return (
     <section className="p-4">
@@ -44,7 +46,9 @@ export function Card({
 
           {/* Dados de usuário */}
           <div className="flex flex-col items-center gap-2 lg:items-start lg:justify-start lg:text-start">
-            <div className="image-wrapper mb-2 h-16 w-16 overflow-hidden rounded-full bg-zinc-400"></div>
+            <div className="image-wrapper mb-2 h-16 w-16 overflow-hidden rounded-full bg-zinc-400">
+              <img src={avatar ? avatar : '/avatar_fallback.png'} />
+            </div>
             <p className="text-center text-lg font-semibold">{name}</p>
             <p className="text-center text-md text-gray-500 lg:text-start">
               {address}

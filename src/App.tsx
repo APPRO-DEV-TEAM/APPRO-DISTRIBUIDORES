@@ -376,6 +376,7 @@ function App() {
                     address={distributor.ADDRESS}
                     phone={distributor.PHONE_NUMBER}
                     whatsapp={distributor.WHATSAPP_NUMBER}
+                    avatar={distributor.AVATAR}
                     email={distributor.EMAIL}
                   />
                 ))}

@@ -1,5 +1,6 @@
 export interface DistributorProps {
   DISTRIBUTOR_ID: string;
+  AVATAR: string | null;
   PLAN_TYPE: "pro" | "starter" | "master";
   ADDRESS: string;
   LONGITUDE: number;

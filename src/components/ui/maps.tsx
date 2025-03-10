@@ -77,7 +77,9 @@ export function Maps({ locations, mapCenter, rangeZone, zoom = 8 }: MapsProps) {
 
                 {/* Dados de usuário */}
                 <div className="flex flex-col items-center gap-2 lg:items-start lg:justify-start lg:text-start">
-                  <div className="image-wrapper mb-2 h-16 w-16 overflow-hidden rounded-full bg-zinc-400"></div>
+                  <div className="image-wrapper mb-2 h-16 w-16 overflow-hidden rounded-full bg-zinc-400">
+                    <img src={distribuidor.AVATAR ? distribuidor.AVATAR : '/avatar_fallback.png'} />
+                  </div>
                   <p className="text-center text-lg font-semibold">{distribuidor.FIRST_NAME} {distribuidor.LAST_NAME}</p>
                   <p className="text-center text-md text-gray-500 lg:text-start">
                     {distribuidor.ADDRESS}

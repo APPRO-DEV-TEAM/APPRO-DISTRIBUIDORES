@@ -97,24 +97,14 @@ function App() {
   const { loadPredictions, predictionResults, setPredictionResults } =
     useSearch();
 
-  // console.log("Região: ", region);
-  // console.log("CEP: ", cep);
-  console.log("RangeZone atualizado:", rangeZone);
-  console.log("Busca: ", search);
-  console.log("Centro do mapa: ", mapCenter);
-  console.log("Zoom do mapa: ", mapZoom);
-  console.log("Distribuidores: ", distributors);
-  console.log("Localizações dos distribuidores: ", distributorsLocations);
-  console.log("Autocomplete: ", predictionResults);
-  console.log("--------------------------------------------------");
-
-
-  const handleResults = (data: PredictionsResultsProps) => {
-    console.log("Resultados atualizados:", data.places);
+  // Função para receber os resultados da busca
+  const handleResults = (_data: PredictionsResultsProps) => {
+    // console.log("Resultados atualizados:", _data.places);
   };
 
-  const handleSubmitSearch = (data: FieldValues) => {
-    console.log("Buscando por:", data);
+  // Função para lidar com o envio do formulário
+  const handleSubmitSearch = (_data: FieldValues) => {
+    // console.log("Buscando por:", _data);
   };
 
   async function getAddressFromCoords(lat: number, lng: number): Promise<GeoLocation | null> {

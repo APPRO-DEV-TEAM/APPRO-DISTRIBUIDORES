@@ -18,7 +18,7 @@ import glyph from "@/assets/pin.png";
 import { useEffect, useState } from "react";
 import { Modal } from "./modal";
 import { api } from "@/services/api";
-import { AppError } from "@/utils/AppError";
+// import { AppError } from "@/utils/AppError";
 import { DistributorProps } from "@/types/distributors.types";
 import { LabelPlan } from "./card";
 import { Loading } from "./loading";
@@ -50,12 +50,8 @@ export function Maps({ locations, mapCenter, rangeZone, zoom = 8 }: MapsProps) {
     try {
       const response = await api.get<DistributorProps>(`/distributors/${id}`);
       setDistributor(response.data);
-    } catch (error) {
-      const isAppError = error instanceof AppError;
-      const message = isAppError ? error.message : 'Erro ao buscar detalhes do distribuidor';
-      if (isAppError) {
-        console.error(message);
-      }
+    } catch {
+      // Capturando erro mas não exibindo mensagem de console
     }
   }
 

@@ -64,6 +64,7 @@ Este projeto usa variáveis de ambiente para as chaves da API do Google Maps e G
    ```
    VITE_GOOGLE_MAPS_API_KEY=sua_chave_da_api_google_maps
    VITE_GOOGLE_PLACES_API_KEY=sua_chave_da_api_google_places
+   VITE_API_BASE_URL=https://api.appro.com.br/api/
    ```
 
 3. As variáveis de ambiente são carregadas automaticamente pelo Vite durante o desenvolvimento e build.

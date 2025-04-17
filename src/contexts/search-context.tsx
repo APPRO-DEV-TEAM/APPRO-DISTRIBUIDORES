@@ -77,7 +77,7 @@ export const SearchContextProvider = ({
     setSearch(place.displayName.text);
     setPredictionResults([]);
     setSelectedPlace(place);
-    console.log("Place selected:", place, search);
+    // console.log("Place selected:", place, search);
   };
 
   return (

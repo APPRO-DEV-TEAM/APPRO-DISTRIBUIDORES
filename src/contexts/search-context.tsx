@@ -21,6 +21,7 @@ export const SearchContextProvider = ({
   children,
   onResultChange,
 }: SearchProviderProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [search, setSearch] = useURLState(
     "q",
     "",

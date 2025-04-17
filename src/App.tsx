@@ -97,12 +97,13 @@ function App() {
   const { loadPredictions, predictionResults, setPredictionResults } =
     useSearch();
 
-  // Função para receber os resultados da busca
+  // Essas funções são usadas como callbacks, por isso precisam existir mesmo sem usar os parâmetros
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleResults = (_data: PredictionsResultsProps) => {
     // console.log("Resultados atualizados:", _data.places);
   };
 
-  // Função para lidar com o envio do formulário
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSubmitSearch = (_data: FieldValues) => {
     // console.log("Buscando por:", _data);
   };

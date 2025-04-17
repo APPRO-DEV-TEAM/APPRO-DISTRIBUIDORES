@@ -9,7 +9,7 @@ import { List } from "./assets/icons/list";
 
 import bannerWeb from "./assets/banner-web.png";
 import bannerMobile from "./assets/banner-mobile.png";
-import { PlaceProps, PredictionsResultsProps } from "./types/search.types";
+import { PlaceProps } from "./types/search.types";
 import { Search } from "./components/ui/search";
 
 import { useForm, Controller, FieldValues } from "react-hook-form";
@@ -97,15 +97,14 @@ function App() {
   const { loadPredictions, predictionResults, setPredictionResults } =
     useSearch();
 
-  // Essas funções são usadas como callbacks, por isso precisam existir mesmo sem usar os parâmetros
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleResults = (_data: PredictionsResultsProps) => {
-    // console.log("Resultados atualizados:", _data.places);
+  // Função para receber os resultados da busca
+  const handleResults = (data: FieldValues) => {
+    console.log("Resultados atualizados:", data.places);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleSubmitSearch = (_data: FieldValues) => {
-    // console.log("Buscando por:", _data);
+  // Função para lidar com o envio do formulário
+  const handleSubmitSearch = (data: FieldValues) => {
+    console.log("Buscando por:", data);
   };
 
   async function getAddressFromCoords(lat: number, lng: number): Promise<GeoLocation | null> {

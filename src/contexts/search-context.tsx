@@ -21,8 +21,7 @@ export const SearchContextProvider = ({
   children,
   onResultChange,
 }: SearchProviderProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [search, setSearch] = useURLState(
+  const [, setSearch] = useURLState(
     "q",
     "",
     encodeURIComponent,
@@ -78,7 +77,6 @@ export const SearchContextProvider = ({
     setSearch(place.displayName.text);
     setPredictionResults([]);
     setSelectedPlace(place);
-    // console.log("Place selected:", place, search);
   };
 
   return (

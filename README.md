@@ -48,3 +48,24 @@ export default tseslint.config({
   },
 });
 ```
+
+## Variáveis de Ambiente
+
+Este projeto usa variáveis de ambiente para as chaves da API do Google Maps e Google Places. Para configurar:
+
+1. Copie o arquivo `.env.example` para um novo arquivo chamado `.env`:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Edite o arquivo `.env` e adicione suas chaves de API:
+
+   ```
+   VITE_GOOGLE_MAPS_API_KEY=sua_chave_da_api_google_maps
+   VITE_GOOGLE_PLACES_API_KEY=sua_chave_da_api_google_places
+   ```
+
+3. As variáveis de ambiente são carregadas automaticamente pelo Vite durante o desenvolvimento e build.
+
+Importante: O arquivo `.env` está incluído no `.gitignore` para evitar que suas chaves sejam publicadas no repositório. Não adicione chaves de API diretamente no código.

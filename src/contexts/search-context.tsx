@@ -40,7 +40,7 @@ export const SearchContextProvider = ({
           return;
         }
 
-        const apiKey = "AIzaSyATFFlBVvbstEAytcAChHNX73TIrsFmGzU";
+        const apiKey = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
         if (!apiKey) throw new Error("API Key não definida!");
 
         const response = await fetch(

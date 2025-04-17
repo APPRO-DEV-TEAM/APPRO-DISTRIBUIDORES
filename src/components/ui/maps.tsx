@@ -108,7 +108,7 @@ export function Maps({ locations, mapCenter, rangeZone, zoom = 8 }: MapsProps) {
 
         </Modal.Content>
       </Modal.Root>
-      <APIProvider apiKey="AIzaSyCayBJlSt4XIOk3ec0WuTHJpm3P_-MOgmg">
+      <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
         <Map
           mapId="fee4406f23c81cde"
           defaultCenter={
